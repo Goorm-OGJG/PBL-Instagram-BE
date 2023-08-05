@@ -1,11 +1,8 @@
-package ogjg.instagram.story.domain;
+package ogjg.instagram.user.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ogjg.instagram.like.domain.StoryLike;
-import ogjg.instagram.user.domain.StoryUserRead;
-import ogjg.instagram.user.domain.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -18,24 +15,20 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Entity
 @NoArgsConstructor(access = PROTECTED)
-public class Story {
+public class Collection {
 
     @Id
-    @Column(name = "story_id")
+    @Column(name = "collection_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
     private User user;
 
-    @OneToMany(mappedBy = "story")
-    private List<StoryLike> storyLikes = new ArrayList<>();
+    @OneToMany(mappedBy = "collection")
+    private List<CollectionFeed> collectionFeeds = new ArrayList<>();
 
-    @OneToMany(mappedBy = "story")
-    private List<StoryUserRead> storyUserReads = new ArrayList<>();
-
-    @OneToMany(mappedBy = "story")
-    private List<StoryMedia> storyMedia = new ArrayList<>();
+    private String collectionName;
 
     private LocalDateTime createdAt;
 }

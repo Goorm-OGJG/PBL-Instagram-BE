@@ -1,9 +1,8 @@
-package ogjg.instagram.hashtag.domain;
+package ogjg.instagram.story.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ogjg.instagram.feed.domain.Feed;
 
 import java.time.LocalDateTime;
 
@@ -14,17 +13,21 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Entity
 @NoArgsConstructor(access = PROTECTED)
-public class Hashtag {
+public class StoryMedia {
 
     @Id
-    @Column(name = "hashtag_id")
+    @Column(name = "media_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
-    private Feed feed;
+    private Story story;
+
+    private String mediaType;
+
+    private String mediaUrl;
 
     private LocalDateTime createdAt;
-
-    private LocalDateTime modifiedAt;
 }
+
+
