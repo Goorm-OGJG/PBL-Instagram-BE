@@ -34,8 +34,8 @@ dependencies {
     testImplementation 'org.springframework.security:spring-security-test'
 
     // ⭐ Spring boot 3.x이상에서 QueryDsl 패키지를 정의하는 방법
-    implementation 'com.querydsl:querydsl-jpa:5.0.0:jakarta'
-    annotationProcessor "com.querydsl:querydsl-apt:5.0.0:jakarta"
+    implementation 'com.querydsl:querydsl-jpa:5.0.0'
+    annotationProcessor "com.querydsl:querydsl-apt:5.0.0"
 }
 
 tasks.named('test') {
