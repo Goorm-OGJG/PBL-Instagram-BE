@@ -1,9 +1,10 @@
-package ogjg.instagram.hashtag.domain;
+package ogjg.instagram.like.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ogjg.instagram.feed.domain.Feed;
+import ogjg.instagram.user.domain.User;
 
 import java.time.LocalDateTime;
 
@@ -14,17 +15,22 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Entity
 @NoArgsConstructor(access = PROTECTED)
-public class Hashtag {
+public class FeedLike {
 
-    @Id
-    @Column(name = "hashtag_id")
+    @Column(name = "feed_like_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @EmbeddedId
+    private FeedLikePK feedLikePK;
+
+    @MapsId("userId")
+    @ManyToOne(fetch = LAZY)
+    private User user;
+
+    @MapsId("feedId")
     @ManyToOne(fetch = LAZY)
     private Feed feed;
 
     private LocalDateTime createdAt;
-
-    private LocalDateTime modifiedAt;
 }

@@ -1,15 +1,12 @@
-package ogjg.instagram.comment.domain;
+package ogjg.instagram.like.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ogjg.instagram.feed.domain.Feed;
-import ogjg.instagram.like.domain.CommentLike;
+import ogjg.instagram.comment.domain.InnerComment;
 import ogjg.instagram.user.domain.User;
 
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
@@ -18,26 +15,22 @@ import static lombok.AccessLevel.PROTECTED;
 @Getter
 @Entity
 @NoArgsConstructor(access = PROTECTED)
-public class Comment {
+public class InnerCommentLike {
 
-    @Id
-    @Column(name = "comment_id")
+    @Column(name = "inner_comment_like_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    private Feed feed;
+    @EmbeddedId
+    private InnerCommentLikePK innerCommentLikePK;
 
+    @MapsId("userId")
     @ManyToOne(fetch = LAZY)
     private User user;
 
-    @OneToMany
-    private List<CommentLike> commentLikes = new ArrayList<>();
-
-    @OneToMany
-    private List<InnerComment> innerComments = new ArrayList<>();
-
-    private String content;
+    @MapsId("innerCommentId")
+    @ManyToOne(fetch = LAZY)
+    private InnerComment innerComment;
 
     private LocalDateTime createdAt;
 }
