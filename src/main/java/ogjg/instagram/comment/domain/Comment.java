@@ -31,10 +31,10 @@ public class Comment {
     @ManyToOne(fetch = LAZY)
     private User user;
 
-    @OneToMany
+    @OneToMany(mappedBy = "comment")
     private List<CommentLike> commentLikes = new ArrayList<>();
 
-    @OneToMany
+    @OneToMany(mappedBy = "comment")
     private List<InnerComment> innerComments = new ArrayList<>();
 
     private String content;
