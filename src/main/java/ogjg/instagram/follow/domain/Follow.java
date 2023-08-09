@@ -1,16 +1,18 @@
 package ogjg.instagram.follow.domain;
 
 import jakarta.persistence.*;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import ogjg.instagram.user.domain.User;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
-@Getter
 @Entity
 @NoArgsConstructor(access = PROTECTED)
+@Getter
 public class Follow {
 
     @EmbeddedId

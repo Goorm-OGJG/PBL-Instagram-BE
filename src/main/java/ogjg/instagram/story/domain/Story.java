@@ -6,6 +6,7 @@ import lombok.NoArgsConstructor;
 import ogjg.instagram.like.domain.StoryLike;
 import ogjg.instagram.user.domain.StoryUserRead;
 import ogjg.instagram.user.domain.User;
+import org.hibernate.validator.constraints.Currency;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,7 +22,6 @@ import static lombok.AccessLevel.PROTECTED;
 public class Story {
 
     @Id
-    @Column(name = "story_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 

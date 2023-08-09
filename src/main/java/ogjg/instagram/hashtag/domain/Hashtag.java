@@ -17,12 +17,14 @@ import static lombok.AccessLevel.PROTECTED;
 public class Hashtag {
 
     @Id
-    @Column(name = "hashtag_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
     private Feed feed;
+
+    @Column(length = 150, nullable = false)
+    private String content;
 
     private LocalDateTime createdAt;
 

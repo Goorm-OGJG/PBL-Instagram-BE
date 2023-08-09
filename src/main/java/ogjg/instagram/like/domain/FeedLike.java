@@ -17,7 +17,6 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class FeedLike {
 
-    @Column(name = "feed_like_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 

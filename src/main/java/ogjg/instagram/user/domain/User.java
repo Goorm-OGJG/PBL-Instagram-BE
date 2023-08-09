@@ -1,6 +1,8 @@
 package ogjg.instagram.user.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
+import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ogjg.instagram.comment.domain.Comment;
@@ -27,20 +29,23 @@ import static lombok.AccessLevel.PROTECTED;
 public class User {
 
     @Id
-    @Column(name = "user_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
+    @Column(nullable = false)
     private String nickname;
 
     private String userName;
 
+    @Column(nullable = false, unique = true)
     private String email;
 
+    @Column(nullable = false)
     private String password;
 
     private String userIntro;
 
+    @Column(length = 2200)
     private String userImg;
 
     private boolean recommend;

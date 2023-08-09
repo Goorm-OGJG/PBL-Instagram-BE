@@ -17,8 +17,8 @@ import static lombok.AccessLevel.PROTECTED;
 @NoArgsConstructor(access = PROTECTED)
 public class CommentLike {
 
-    @Column(name = "comment_like_id")
     @GeneratedValue(strategy = IDENTITY)
+    @Column(nullable = false, unique = true)
     private Long id;
 
     @EmbeddedId
