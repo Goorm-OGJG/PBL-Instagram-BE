@@ -18,7 +18,6 @@ import static lombok.AccessLevel.PROTECTED;
 public class Collection {
 
     @Id
-    @Column(name = "collection_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 

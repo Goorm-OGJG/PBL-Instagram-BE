@@ -20,7 +20,6 @@ import static lombok.AccessLevel.PROTECTED;
 public class InnerComment {
 
     @Id
-    @Column(name = "inner_comment_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
@@ -33,6 +32,7 @@ public class InnerComment {
     @OneToMany(mappedBy = "innerComment")
     private List<InnerCommentLike> innerCommentLikes = new ArrayList<>();
 
+    @Column(length = 2200, nullable = false)
     private String content;
 
     private LocalDateTime createdAt;

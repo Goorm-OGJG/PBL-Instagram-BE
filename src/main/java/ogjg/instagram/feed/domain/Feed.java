@@ -24,7 +24,6 @@ import static lombok.AccessLevel.PROTECTED;
 public class Feed {
 
     @Id
-    @Column(name = "feed_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
@@ -46,6 +45,7 @@ public class Feed {
     @OneToMany(mappedBy = "feed")
     private List<Comment> comments = new ArrayList<>();
 
+    @Column(length = 2200, nullable = false)
     private String content;
 
     private LocalDateTime createdAt;

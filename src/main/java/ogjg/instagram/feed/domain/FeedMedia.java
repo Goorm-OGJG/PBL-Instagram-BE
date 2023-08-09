@@ -16,15 +16,16 @@ import static lombok.AccessLevel.PROTECTED;
 public class FeedMedia {
 
     @Id
-    @Column(name = "media_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
     @ManyToOne(fetch = LAZY)
     private Feed feed;
 
+    @Column(nullable = false, length = 10)
     private String mediaType;
 
+    @Column(nullable = false, unique = true)
     private String mediaUrl;
 
     private LocalDateTime createdAt;

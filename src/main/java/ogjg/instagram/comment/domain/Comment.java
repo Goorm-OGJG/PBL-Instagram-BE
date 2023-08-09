@@ -1,11 +1,13 @@
 package ogjg.instagram.comment.domain;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Size;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ogjg.instagram.feed.domain.Feed;
 import ogjg.instagram.like.domain.CommentLike;
 import ogjg.instagram.user.domain.User;
+import org.hibernate.Length;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -21,7 +23,6 @@ import static lombok.AccessLevel.PROTECTED;
 public class Comment {
 
     @Id
-    @Column(name = "comment_id")
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
@@ -37,6 +38,7 @@ public class Comment {
     @OneToMany(mappedBy = "comment")
     private List<InnerComment> innerComments = new ArrayList<>();
 
+    @Column(length = 2200, nullable = false)
     private String content;
 
     private LocalDateTime createdAt;
