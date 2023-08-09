@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
+import ogjg.instagram.follow.response.FollowResponse;
 import ogjg.instagram.user.domain.User;
 
 import static jakarta.persistence.FetchType.LAZY;
@@ -24,5 +24,12 @@ public class Follow {
 
     @MapsId("followId")
     @ManyToOne(fetch = LAZY)
-    private User followUser;
+    private User follow;
+
+    public Follow(FollowResponse followResponse, User user, User follow) {
+        this.followPK = new FollowPK(followResponse);
+        this.user = user;
+        this.follow = follow;
+    }
+
 }
