@@ -6,7 +6,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ogjg.instagram.comment.domain.Comment;
 import ogjg.instagram.hashtag.domain.Hashtag;
-import ogjg.instagram.like.domain.FeedLike;
+import ogjg.instagram.like.domain.feedLike.FeedLike;
 import ogjg.instagram.user.domain.CollectionFeed;
 import ogjg.instagram.user.domain.User;
 
