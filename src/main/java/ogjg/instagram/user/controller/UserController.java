@@ -1,4 +1,4 @@
 package ogjg.instagram.user.controller;
 
-public class UsersController {
+public class UserController {
 }

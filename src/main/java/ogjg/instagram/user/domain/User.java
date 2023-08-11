@@ -2,7 +2,6 @@ package ogjg.instagram.user.domain;
 
 import jakarta.persistence.*;
 import lombok.Builder;
-import lombok.Data;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ogjg.instagram.comment.domain.Comment;
@@ -14,6 +13,7 @@ import ogjg.instagram.like.domain.FeedLike;
 import ogjg.instagram.like.domain.InnerCommentLike;
 import ogjg.instagram.like.domain.StoryLike;
 import ogjg.instagram.story.domain.Story;
+import ogjg.instagram.profile.dto.request.ProfileImgEditRequestDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -90,4 +90,41 @@ public class User {
 
     @OneToMany(mappedBy = "user")
     private List<Follow> follows = new ArrayList<>();
+
+    @Builder
+    public User(Long id, String nickname, String userName, String email, String password, String userIntro, String userImg, boolean recommend, boolean secret, boolean isActive, LocalDateTime createdAt, LocalDateTime modifiedAt, List<FeedLike> feedLikes, List<Feed> feeds, List<Collection> collections, List<Comment> comments, List<CommentLike> commentLikes, List<InnerComment> innerComments, List<InnerCommentLike> innerCommentLikes, List<Story> stories, List<StoryLike> storyLikes, List<StoryUserRead> storyUserReads, List<Follow> follows) {
+        this.id = id;
+        this.nickname = nickname;
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.userIntro = userIntro;
+        this.userImg = userImg;
+        this.recommend = recommend;
+        this.secret = secret;
+        this.isActive = isActive;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
+        this.feedLikes = feedLikes;
+        this.feeds = feeds;
+        this.collections = collections;
+        this.comments = comments;
+        this.commentLikes = commentLikes;
+        this.innerComments = innerComments;
+        this.innerCommentLikes = innerCommentLikes;
+        this.stories = stories;
+        this.storyLikes = storyLikes;
+        this.storyUserReads = storyUserReads;
+        this.follows = follows;
+    }
+
+    public void editProfileImg(String imgUrl) {
+        this.userImg = imgUrl;
+    }
+
+    public void editProfile(ProfileImgEditRequestDto requestDto) {
+        this.userIntro = requestDto.getUserIntro();
+        this.recommend = requestDto.isRecommended();
+        this.secret = requestDto.isSecret();
+    }
 }
