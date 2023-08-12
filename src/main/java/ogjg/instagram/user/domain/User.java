@@ -92,6 +92,19 @@ public class User {
     @OneToMany(mappedBy = "user")
     private List<Follow> follows = new ArrayList<>();
 
+    public User(Long id, String nickname, String userName, String email, String password, String userIntro, String userImg, boolean recommend, boolean secret, boolean isActive) {
+        this.id = id;
+        this.nickname = nickname;
+        this.userName = userName;
+        this.email = email;
+        this.password = password;
+        this.userIntro = userIntro;
+        this.userImg = userImg;
+        this.recommend = recommend;
+        this.secret = secret;
+        this.isActive = isActive;
+    }
+
     @Builder
     public User(Long id, String nickname, String userName, String email, String password, String userIntro, String userImg, boolean recommend, boolean secret, boolean isActive, LocalDateTime createdAt, LocalDateTime modifiedAt, List<FeedLike> feedLikes, List<Feed> feeds, List<Collection> collections, List<Comment> comments, List<CommentLike> commentLikes, List<InnerComment> innerComments, List<InnerCommentLike> innerCommentLikes, List<Story> stories, List<StoryLike> storyLikes, List<StoryUserRead> storyUserReads, List<Follow> follows) {
         this.id = id;
