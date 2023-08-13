@@ -1,13 +1,12 @@
 package ogjg.instagram.comment.domain;
 
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Size;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ogjg.instagram.feed.domain.Feed;
-import ogjg.instagram.like.domain.CommentLike;
+import ogjg.instagram.like.domain.commentLike.CommentLike;
 import ogjg.instagram.user.domain.User;
-import org.hibernate.Length;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -42,4 +41,22 @@ public class Comment {
     private String content;
 
     private LocalDateTime createdAt;
+
+    @Builder
+    public Comment(Long id, Feed feed, User user, List<CommentLike> commentLikes, List<InnerComment> innerComments, String content, LocalDateTime createdAt) {
+        this.id = id;
+        this.feed = feed;
+        this.user = user;
+        this.commentLikes = commentLikes;
+        this.innerComments = innerComments;
+        this.content = content;
+        this.createdAt = createdAt;
+    }
+
+    public static Comment from(Feed findFeed, String content) {
+        return Comment.builder()
+                .feed(findFeed)
+                .content(content)
+                .build();
+    }
 }
