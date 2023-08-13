@@ -8,6 +8,8 @@ import static lombok.AccessLevel.PROTECTED;
 
 @Getter @Setter
 @NoArgsConstructor(access = PROTECTED)
-public class ProfileImgEditRequestDto {
-    private String imgUrl;
+public class ProfileEditRequestDto {
+    private String userIntro;
+    private boolean isRecommended;
+    private boolean isSecret;
 }

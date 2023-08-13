@@ -14,6 +14,14 @@ public class ProfileEditResponseDto {
     private boolean isRecommended;
     private boolean isSecret;
 
+    public ProfileEditResponseDto(Long id, String nickname, String profileImg, String userIntro, boolean isRecommended, boolean isSecret) {
+        this.id = id;
+        this.nickname = nickname;
+        this.profileImg = profileImg;
+        this.userIntro = userIntro;
+        this.isRecommended = isRecommended;
+        this.isSecret = isSecret;
+    }
 
     public static ProfileEditResponseDto from(User user) {
         return ProfileEditResponseDto.builder()

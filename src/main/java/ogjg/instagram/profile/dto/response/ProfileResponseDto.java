@@ -30,6 +30,3 @@ public class ProfileResponseDto {
                 .build();
     }
 }
-
-// ID가 있어야 한다?
-// 내 프로필인지 어떻게 구분하지?
