@@ -1,9 +1,7 @@
 package ogjg.instagram.config;
 
 import lombok.RequiredArgsConstructor;
-import ogjg.instagram.config.security.LoginAuthSuccessHandler;
-import ogjg.instagram.config.security.LoginAuthenticationFilter;
-import ogjg.instagram.config.security.LoginAuthenticationProvider;
+import ogjg.instagram.config.security.*;
 import ogjg.instagram.user.repository.UserAuthenticationRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -45,13 +43,13 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
-                .addFilterBefore(loginAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(loginAuthenticationFilter(), JwtAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers(CorsUtils::isPreFlightRequest)
                         .permitAll()
-                        .requestMatchers("/api/users/login", "/api/users/signup")
+                        .requestMatchers("/**")
                         .permitAll()
-                        .anyRequest().authenticated()
                 )
                 .sessionManagement(sessionManagement ->
                         sessionManagement.sessionCreationPolicy(SessionCreationPolicy.STATELESS));
@@ -100,6 +98,20 @@ public class SecurityConfig {
     @Bean
     public LoginAuthSuccessHandler loginAuthSuccessHandler() {
         return new LoginAuthSuccessHandler(authenticationRepository);
+    }
+
+    @Bean
+    public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
+        JwtAuthenticationFilter jwtAuthFilter = new JwtAuthenticationFilter(
+                authenticationManager(authenticationConfiguration));
+        authenticationManagerBuilder.authenticationProvider(jwtAuthenticationProvider());
+        jwtAuthFilter.afterPropertiesSet();
+        return jwtAuthFilter;
+    }
+
+    @Bean
+    public JwtAuthenticationProvider jwtAuthenticationProvider() {
+        return new JwtAuthenticationProvider();
     }
 
 }
