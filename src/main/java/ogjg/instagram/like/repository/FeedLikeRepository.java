@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface FeedLikeRepository extends JpaRepository<FeedLike,Long> {
 
@@ -29,4 +30,8 @@ public interface FeedLikeRepository extends JpaRepository<FeedLike,Long> {
     @Query("select count(*) from FeedLike fl where fl.feedLikePK.feedId = :feedId")
     Long countLikes(@Param("feedId") Long feedId);
 
+    @Query("""
+            select fl from FeedLike fl where fl.feed.id = :feedId and fl.user.id = :userId  
+    """)
+    Optional<FeedLike> checkLikeStatus(@Param("feedId") Long feedId, @Param("userId") Long userId);
 }

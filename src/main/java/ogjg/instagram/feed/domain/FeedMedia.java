@@ -1,6 +1,7 @@
 package ogjg.instagram.feed.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -31,4 +32,13 @@ public class FeedMedia {
     private LocalDateTime createdAt;
 
     private LocalDateTime modifiedAt;
+
+    @Builder
+    public FeedMedia(Feed feed, String mediaType, String mediaUrl, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        this.feed = feed;
+        this.mediaType = mediaType;
+        this.mediaUrl = mediaUrl;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
+    }
 }

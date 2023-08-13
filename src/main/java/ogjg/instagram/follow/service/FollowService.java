@@ -3,15 +3,16 @@ package ogjg.instagram.follow.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ogjg.instagram.follow.domain.Follow;
-import ogjg.instagram.follow.response.FollowResponse;
 import ogjg.instagram.follow.repository.FollowRepository;
+import ogjg.instagram.follow.response.FollowResponse;
 import ogjg.instagram.follow.response.FollowedResponse;
 import ogjg.instagram.user.domain.User;
-import ogjg.instagram.user.repository.UsersRepository;
+import ogjg.instagram.user.repository.UserRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -19,7 +20,7 @@ import java.util.List;
 public class FollowService {
 
     private final FollowRepository followRepository;
-    private final UsersRepository usersRepository;
+    private final UserRepository usersRepository;
 
     @Transactional
     public void follow(
@@ -66,9 +67,9 @@ public class FollowService {
                 .map( followResponse -> FollowedResponse.builder()
                         .followResponse(followResponse)
                         .followingStatus(
-                                followRepository.followerMeToo(followResponse
-                                        .getFollowId(), followResponse
-                                        .getUserId()) != null
+                                followRepository.followerMeToo(
+                                        followResponse.getFollowId(),
+                                        followResponse.getUserId()) != null
                         )
                         .build())
                 .toList();
@@ -84,5 +85,15 @@ public class FollowService {
         return followRepository.followerCount(userId);
     }
 
+    @Transactional(readOnly = true)
+    public boolean isFollowing(Long userId, Long jwt_myId) {
+        return followRepository.followerMeToo(userId, jwt_myId) == null;
+    }
 
+    @Transactional(readOnly = true)
+    public List<Long> getFollowedIds(Long id) {
+        return followedList(id).stream()
+                .map((followedResponse ->  followedResponse.getFollowId()))
+                .collect(Collectors.toUnmodifiableList());
+    }
 }

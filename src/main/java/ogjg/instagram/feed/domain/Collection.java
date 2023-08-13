@@ -1,8 +1,9 @@
-package ogjg.instagram.user.domain;
+package ogjg.instagram.feed.domain;
 
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import ogjg.instagram.user.domain.User;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;

@@ -61,4 +61,7 @@ public class FeedLikeService {
                 .orElseThrow(()->new IllegalArgumentException(feedId + ": 피드를 찾을 수 없습니다"));
     }
 
+    public boolean isFeedLiked(Long feedId, Long userId) {
+        return feedLikeRepository.checkLikeStatus(feedId, userId).isPresent();
+    }
 }
