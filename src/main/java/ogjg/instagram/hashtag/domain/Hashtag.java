@@ -1,13 +1,13 @@
 package ogjg.instagram.hashtag.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ogjg.instagram.feed.domain.Feed;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
-import static jakarta.persistence.FetchType.LAZY;
 import static jakarta.persistence.GenerationType.IDENTITY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -20,8 +20,8 @@ public class Hashtag {
     @GeneratedValue(strategy = IDENTITY)
     private Long id;
 
-    @ManyToOne(fetch = LAZY)
-    private Feed feed;
+    @OneToMany(mappedBy = "hashtag")
+    private List<HashtagFeed> hashtagFeeds;
 
     @Column(length = 150, nullable = false)
     private String content;
@@ -29,4 +29,13 @@ public class Hashtag {
     private LocalDateTime createdAt;
 
     private LocalDateTime modifiedAt;
+
+    @Builder
+    public Hashtag(Long id, List<HashtagFeed> hashtagFeeds, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
+        this.id = id;
+        this.hashtagFeeds = hashtagFeeds;
+        this.content = content;
+        this.createdAt = createdAt;
+        this.modifiedAt = modifiedAt;
+    }
 }
