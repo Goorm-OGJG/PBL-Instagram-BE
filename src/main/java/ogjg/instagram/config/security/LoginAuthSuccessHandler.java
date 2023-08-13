@@ -35,7 +35,7 @@ public class LoginAuthSuccessHandler {
 
         Optional<UserAuthentication> userAuth = getUserAuthentication(userDetails, type);
 
-        saveOrUpdateRefreshTokenToDatabase(userDetails, userAuth, refreshToken);
+        upsertRefreshTokenToDatabase(userDetails, userAuth, refreshToken);
 
         response.addHeader(AUTH_HEADER, TOKEN_TYPE + " " + accessToken);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
@@ -58,7 +58,7 @@ public class LoginAuthSuccessHandler {
         return cookie;
     }
 
-    private void saveOrUpdateRefreshTokenToDatabase(CustomUserDetails userDetails, Optional<UserAuthentication> userAuth, String refreshToken) {
+    private void upsertRefreshTokenToDatabase(CustomUserDetails userDetails, Optional<UserAuthentication> userAuth, String refreshToken) {
         if (userAuth.isPresent()) {
             UserAuthentication updatedUserAuth = userAuth.get();
             updatedUserAuth.updateRefreshToken(refreshToken);
