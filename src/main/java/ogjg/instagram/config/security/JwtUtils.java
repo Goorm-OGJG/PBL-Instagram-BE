@@ -1,7 +1,6 @@
 package ogjg.instagram.config.security;
 
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import io.jsonwebtoken.*;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -11,7 +10,6 @@ import java.security.Key;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.UUID;
 
 @Component
 public class JwtUtils {
@@ -21,6 +19,8 @@ public class JwtUtils {
 
     private static final int ACCESS_TOKEN_VALID_TIME = MINUTE * 5;
     private static final long REFRESH_TOKEN_VALID_TIME = DAY * 30L;
+    private static final String ISSUER = "team_ogjg";
+    private static Key SIGNATURE_KEY;
     private static String JWT_SECRET;
 
     @Value("${jwt.secret}")
@@ -49,6 +49,31 @@ public class JwtUtils {
                 .compact();
     }
 
+    public static boolean isValidToken(String jwt) {
+
+        Claims claims = getClaims(jwt);
+
+        if (!ISSUER.equals(claims.get("iss"))) {
+            throw new JwtException("Issuer가 일치하지 않습니다.");
+        }
+
+        Date expiration = claims.getExpiration();
+        if (expiration.before(new Date())) {
+            throw new JwtException("토큰이 만료되었습니다.");
+        }
+
+        return true;
+    }
+
+    public static Claims getClaims(String token) {
+        Jws<Claims> claimsJws = Jwts.parserBuilder()
+                .setSigningKey(generateKey())
+                .build()
+                .parseClaimsJws(token);
+
+        return claimsJws.getBody();
+    }
+
     private static Map<String, Object> createHeader() {
         return new HashMap<>(Map.of(
                 "alg", "HS256",
@@ -64,8 +89,11 @@ public class JwtUtils {
     }
 
     private static Key generateKey() {
-        byte[] byteSecretKey = JWT_SECRET.getBytes(StandardCharsets.UTF_8);
-        return new SecretKeySpec(byteSecretKey, SignatureAlgorithm.HS256.getJcaName());
+        if (SIGNATURE_KEY == null) {
+            byte[] byteSecretKey = JWT_SECRET.getBytes(StandardCharsets.UTF_8);
+            SIGNATURE_KEY = new SecretKeySpec(byteSecretKey, SignatureAlgorithm.HS256.getJcaName());
+        }
+        return SIGNATURE_KEY;
     }
 
 }
