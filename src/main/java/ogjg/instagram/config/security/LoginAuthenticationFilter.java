@@ -40,10 +40,8 @@ public class LoginAuthenticationFilter extends OncePerRequestFilter {
         String type = requestBody.get("type").asText();
 
         UsernamePasswordAuthenticationToken authenticationToken = new UsernamePasswordAuthenticationToken(username, password);
-        System.out.println("token 생성 완료");
 
         Authentication authentication = authenticationManager.authenticate(authenticationToken);
-        System.out.println("Authentication : " + authentication);
 
         loginAuthSuccessHandler.onAuthenticationSuccess(request, response, authentication, type);
 
