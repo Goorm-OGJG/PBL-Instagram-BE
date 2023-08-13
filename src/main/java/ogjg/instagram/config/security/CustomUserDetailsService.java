@@ -2,7 +2,6 @@ package ogjg.instagram.config.security;
 
 import lombok.RequiredArgsConstructor;
 import ogjg.instagram.user.domain.User;
-import ogjg.instagram.user.repository.UsersRepository;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
