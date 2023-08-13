@@ -31,8 +31,6 @@ public class JwtUtils {
     public static String generateAccessToken(CustomUserDetails userDetails) {
         return Jwts.builder()
                 .setHeader(createHeader())
-                .setSubject(userDetails.getUser().getId().toString())
-                .setIssuer("team_ogjg")
                 .setClaims(createClaims(userDetails))
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALID_TIME))
                 .signWith(generateKey())
@@ -83,6 +81,7 @@ public class JwtUtils {
 
     private static Map<String, Object> createClaims(CustomUserDetails userDetails) {
         return new HashMap<>(Map.of(
+                "iss", ISSUER,
                 "email", userDetails.getUsername(),
                 "username", userDetails.getNickname()
         ));
