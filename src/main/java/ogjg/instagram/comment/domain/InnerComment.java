@@ -1,9 +1,10 @@
 package ogjg.instagram.comment.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ogjg.instagram.like.domain.InnerCommentLike;
+import ogjg.instagram.like.domain.innerCommentLike.InnerCommentLike;
 import ogjg.instagram.user.domain.User;
 
 import java.time.LocalDateTime;
@@ -36,4 +37,14 @@ public class InnerComment {
     private String content;
 
     private LocalDateTime createdAt;
+
+    @Builder
+    public InnerComment(Long id, Comment comment, User user, List<InnerCommentLike> innerCommentLikes, String content, LocalDateTime createdAt) {
+        this.id = id;
+        this.comment = comment;
+        this.user = user;
+        this.innerCommentLikes = innerCommentLikes;
+        this.content = content;
+        this.createdAt = createdAt;
+    }
 }

@@ -60,4 +60,8 @@ public class CommentLikeService {
                 .orElseThrow(()->new IllegalArgumentException(commentId + ": 댓글를 찾을 수 없습니다"));
     }
 
+
+    public boolean isCommentLiked(Long commentId, Long userId) {
+        return commentLikeRepository.checkLikeStatus(commentId, userId).isPresent();
+    }
 }

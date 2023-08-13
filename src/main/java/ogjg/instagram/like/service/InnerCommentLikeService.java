@@ -44,8 +44,10 @@ public class InnerCommentLikeService {
 
     private InnerComment innerCommentFindById(Long innerCommentId){
         return innerCommentRepository.findById(innerCommentId)
-                .orElseThrow(()->new IllegalArgumentException(innerCommentId + ": 대댓글를 찾을 수 없습니다"));
+                .orElseThrow(() -> new IllegalArgumentException(innerCommentId + ": 대댓글를 찾을 수 없습니다"));
     }
 
-
+    public Long countInnerComment(Long commentId) {
+        return innerCommentRepository.countByCommentId(commentId);
+    }
 }
