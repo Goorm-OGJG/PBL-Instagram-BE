@@ -30,9 +30,10 @@ public class JwtUtils {
 
     public static String generateAccessToken(CustomUserDetails userDetails) {
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
+                .setHeader(createHeader())
+                .setSubject(userDetails.getUser().getId().toString())
                 .setIssuer("team_ogjg")
-                .setClaims(new HashMap<>(Map.of("email", userDetails.getUser().getEmail())))
+                .setClaims(createClaims(userDetails))
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALID_TIME))
                 .signWith(generateKey())
                 .compact();
@@ -40,12 +41,26 @@ public class JwtUtils {
 
     public static String generateRefreshToken(CustomUserDetails userDetails) {
         return Jwts.builder()
-                .setSubject(userDetails.getUsername())
+                .setHeader(createHeader())
+                .setSubject(userDetails.getUser().getId().toString())
                 .setIssuer("team_ogjg")
-                .setId(UUID.randomUUID().toString())
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_VALID_TIME))
                 .signWith(generateKey())
                 .compact();
+    }
+
+    private static Map<String, Object> createHeader() {
+        return new HashMap<>(Map.of(
+                "alg", "HS256",
+                "typ", "JWT"
+        ));
+    }
+
+    private static Map<String, Object> createClaims(CustomUserDetails userDetails) {
+        return new HashMap<>(Map.of(
+                "email", userDetails.getUsername(),
+                "username", userDetails.getNickname()
+        ));
     }
 
     private static Key generateKey() {
