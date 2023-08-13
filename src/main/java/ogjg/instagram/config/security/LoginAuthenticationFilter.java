@@ -14,19 +14,17 @@ import org.springframework.security.core.Authentication;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
-import java.util.List;
 
 @RequiredArgsConstructor
 public class LoginAuthenticationFilter extends OncePerRequestFilter {
 
     private final AuthenticationManager authenticationManager;
     private final LoginAuthSuccessHandler loginAuthSuccessHandler;
-    private final List<String> permitUrlList;
 
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        if (isUrlPath(request)) {
+        if (!"/api/users/login".equals(request.getRequestURI())) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -47,8 +45,4 @@ public class LoginAuthenticationFilter extends OncePerRequestFilter {
 
     }
 
-    private boolean isUrlPath(HttpServletRequest request) {
-        return permitUrlList.stream()
-                .anyMatch(url -> url.equals(request.getRequestURI()));
-    }
 }

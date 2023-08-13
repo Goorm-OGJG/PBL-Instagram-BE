@@ -84,7 +84,7 @@ public class SecurityConfig {
 
     @Bean
     LoginAuthenticationFilter loginAuthenticationFilter() throws Exception {
-        LoginAuthenticationFilter loginAuthFilter = new LoginAuthenticationFilter(authenticationManager(authenticationConfiguration), loginAuthSuccessHandler(), permitJwtUrlList);
+        LoginAuthenticationFilter loginAuthFilter = new LoginAuthenticationFilter(authenticationManager(authenticationConfiguration), loginAuthSuccessHandler());
         authenticationManagerBuilder.authenticationProvider(loginAuthenticationProvider());
         loginAuthFilter.afterPropertiesSet();
         return loginAuthFilter;
