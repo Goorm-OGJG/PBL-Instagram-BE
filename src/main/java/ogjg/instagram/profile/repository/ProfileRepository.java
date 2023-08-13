@@ -1,6 +1,6 @@
 package ogjg.instagram.profile.repository;
 
-import ogjg.instagram.profile.dto.ProfileFeedDto;
+import ogjg.instagram.profile.dto.response.ProfileFeedResponseDto;
 import ogjg.instagram.user.domain.User;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -24,5 +24,5 @@ public interface ProfileRepository extends JpaRepository<User,Long> {
        FROM Feed f
        WHERE f.user.id = :userId
     """)
-    Page<ProfileFeedDto> findMyFeedsByUserId(@Param("userId") Long jwt_userId, Pageable pageable);
+    Page<ProfileFeedResponseDto.ProfileFeedDto> findMyFeedsByUserId(@Param("userId") Long jwt_userId, Pageable pageable);
 }

@@ -6,14 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ogjg.instagram.comment.domain.Comment;
 import ogjg.instagram.comment.domain.InnerComment;
+import ogjg.instagram.feed.domain.Collection;
 import ogjg.instagram.feed.domain.Feed;
 import ogjg.instagram.follow.domain.Follow;
-import ogjg.instagram.like.domain.CommentLike;
-import ogjg.instagram.like.domain.FeedLike;
-import ogjg.instagram.like.domain.InnerCommentLike;
-import ogjg.instagram.like.domain.StoryLike;
+import ogjg.instagram.like.domain.commentLike.CommentLike;
+import ogjg.instagram.like.domain.feedLike.FeedLike;
+import ogjg.instagram.like.domain.innerCommentLike.InnerCommentLike;
+import ogjg.instagram.like.domain.storyLike.StoryLike;
+import ogjg.instagram.profile.dto.request.ProfileEditRequestDto;
 import ogjg.instagram.story.domain.Story;
-import ogjg.instagram.profile.dto.request.ProfileImgEditRequestDto;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -122,7 +123,7 @@ public class User {
         this.userImg = imgUrl;
     }
 
-    public void editProfile(ProfileImgEditRequestDto requestDto) {
+    public void editProfile(ProfileEditRequestDto requestDto) {
         this.userIntro = requestDto.getUserIntro();
         this.recommend = requestDto.isRecommended();
         this.secret = requestDto.isSecret();

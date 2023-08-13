@@ -2,11 +2,9 @@ package ogjg.instagram.profile.controller;
 
 import lombok.RequiredArgsConstructor;
 import ogjg.instagram.feed.service.FeedService;
-import ogjg.instagram.follow.service.FollowService;
-import ogjg.instagram.profile.dto.response.ProfileEditResponseDto;
-import ogjg.instagram.profile.dto.response.ProfileFeedResponseDto;
+import ogjg.instagram.profile.dto.request.ProfileEditRequestDto;
 import ogjg.instagram.profile.dto.request.ProfileImgEditRequestDto;
-import ogjg.instagram.profile.dto.response.ProfileResponseDto;
+import ogjg.instagram.profile.dto.response.ProfileEditResponseDto;
 import ogjg.instagram.profile.service.ProfileService;
 import ogjg.instagram.user.service.UserService;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +22,6 @@ import org.springframework.web.bind.annotation.*;
 public class ProfileController {
 
     private final UserService userService;
-    private final FollowService followService;
     private final FeedService feedService;
     private final ProfileService profileService;
 
@@ -36,48 +33,36 @@ public class ProfileController {
         Long jwt_myId = 1L;
 
         return ResponseEntity.ok(
-                ProfileResponseDto.from(
-                        userService.findById(userId),
-                        feedService.countAllByUserID(userId),
-                        followService.followedCount(userId),
-                        followService.followingCount(jwt_myId),
-                        followService.isFollowing(userId, jwt_myId)
-                )
-        );
+                profileService.findProfile(userId, jwt_myId));
     }
 
     /**
      * 내 피드 목록 가져오기 - 무한 스크롤 9개씩
      */
-    @GetMapping("/myFeeds")
+    @GetMapping("/{userId}/feeds")
     public ResponseEntity<?> myFeeds(
+            @PathVariable ("userId") Long userId,
             @PageableDefault(page = 0, size = 9, sort = "id", direction = Sort.Direction.ASC)
             Pageable pageable
     ) {
         Long jwt_myId = 1L;
 
         return ResponseEntity.ok(
-                ProfileFeedResponseDto.by(
-                        feedService.findProfileFeedsByUserId(jwt_myId, pageable)
-                )
-        );
+                feedService.findProfileFeedsByUserId(userId, pageable));
     }
 
     /**
      * 내가 보관한 피드 목록 가져오기 - 무한 스크롤 9개씩
      */
-    @GetMapping("/savedFeeds")
-    public ResponseEntity<?> savedFeeds(
+    @GetMapping("/collected-feeds")
+    public ResponseEntity<?> collectedFeeds(
             @PageableDefault(page = 0, size = 9, sort = "id", direction = Sort.Direction.ASC)
             Pageable pageable
     ) {
         Long jwt_myId = 1L;
 
         return ResponseEntity.ok(
-                ProfileFeedResponseDto.of(
-                        profileService.findSavedFeeds(jwt_myId, pageable)
-                )
-        );
+                profileService.findCollectedFeeds(jwt_myId, pageable));
     }
 
     /**
@@ -88,15 +73,14 @@ public class ProfileController {
         Long jwt_myId = 1L;
 
         return ResponseEntity.ok(
-                ProfileEditResponseDto.from(userService.findById(jwt_myId))
-        );
+                ProfileEditResponseDto.from(userService.findById(jwt_myId)));
     }
 
     /**
      * 프로필 수정
      */
-    @PutMapping()
-    public ResponseEntity<?> editProfile(@RequestBody ProfileImgEditRequestDto requestDto) {
+    @PutMapping("")
+    public ResponseEntity<?> editProfile(@RequestBody ProfileEditRequestDto requestDto) {
         Long jwt_myId = 1L;
 
         userService.save(jwt_myId, requestDto);
@@ -107,10 +91,10 @@ public class ProfileController {
      * 프로필 이미지 수정
      */
     @PutMapping("/img")
-    public ResponseEntity<?> editProfileImg(@RequestBody String imgUrl) {
+    public ResponseEntity<?> editProfileImg(@RequestBody ProfileImgEditRequestDto requestDto) {
         Long jwt_myId = 1L;
 
-        userService.saveImg(jwt_myId, imgUrl);
+        userService.saveImg(jwt_myId, requestDto);
         return ResponseEntity.ok().build();
     }
 

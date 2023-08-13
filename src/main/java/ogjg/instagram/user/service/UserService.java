@@ -1,6 +1,7 @@
 package ogjg.instagram.user.service;
 
 import lombok.RequiredArgsConstructor;
+import ogjg.instagram.profile.dto.request.ProfileEditRequestDto;
 import ogjg.instagram.profile.dto.request.ProfileImgEditRequestDto;
 import ogjg.instagram.user.domain.User;
 import ogjg.instagram.user.repository.UserRepository;
@@ -20,7 +21,7 @@ public class UserService {
     }
 
     @Transactional
-    public User save(Long userId, ProfileImgEditRequestDto requestDto) {
+    public User save(Long userId, ProfileEditRequestDto requestDto) {
         User findUser = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다. id=" + userId));
 
@@ -29,10 +30,10 @@ public class UserService {
     }
 
     @Transactional
-    public void saveImg(Long userId, String imgUrl) {
+    public void saveImg(Long userId, ProfileImgEditRequestDto requestDto) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다. id=" + userId));
 
-        user.editProfileImg(imgUrl);
+        user.editProfileImg(requestDto.getImgUrl());
     }
 }

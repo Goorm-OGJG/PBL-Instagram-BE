@@ -7,7 +7,6 @@ import lombok.NoArgsConstructor;
 import ogjg.instagram.like.domain.storyLike.StoryLike;
 import ogjg.instagram.user.domain.StoryUserRead;
 import ogjg.instagram.user.domain.User;
-import org.hibernate.validator.constraints.Currency;
 
 import java.time.LocalDateTime;
 import java.util.ArrayList;
