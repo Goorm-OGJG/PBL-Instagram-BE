@@ -1,9 +1,10 @@
 package ogjg.instagram.story.domain;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ogjg.instagram.like.domain.StoryLike;
+import ogjg.instagram.like.domain.storyLike.StoryLike;
 import ogjg.instagram.user.domain.StoryUserRead;
 import ogjg.instagram.user.domain.User;
 import org.hibernate.validator.constraints.Currency;
@@ -38,4 +39,10 @@ public class Story {
     private List<StoryMedia> storyMedia = new ArrayList<>();
 
     private LocalDateTime createdAt;
+
+    @Builder
+    public Story(User user) {
+        this.user = user;
+        this.createdAt = LocalDateTime.now();
+    }
 }
