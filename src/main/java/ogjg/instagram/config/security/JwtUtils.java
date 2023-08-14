@@ -1,6 +1,7 @@
 package ogjg.instagram.config.security;
 
 import io.jsonwebtoken.*;
+import ogjg.instagram.user.dto.JwtUserClaimsDto;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -28,20 +29,19 @@ public class JwtUtils {
         JWT_SECRET = jwtSecret;
     }
 
-    public static String generateAccessToken(CustomUserDetails userDetails) {
+    public static String generateAccessToken(JwtUserClaimsDto userClaimsDto) {
         return Jwts.builder()
                 .setHeader(createHeader())
-                .setClaims(createClaims(userDetails))
+                .setClaims(createClaims(userClaimsDto))
                 .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALID_TIME))
                 .signWith(generateKey())
                 .compact();
     }
 
-    public static String generateRefreshToken(CustomUserDetails userDetails) {
+    public static String generateRefreshToken(JwtUserClaimsDto userClaimsDto) {
         return Jwts.builder()
                 .setHeader(createHeader())
-                .setSubject(userDetails.getUser().getId().toString())
-                .setIssuer("team_ogjg")
+                .setClaims(new HashMap<>(Map.of("iss", ISSUER, "sub", userClaimsDto.getUsername())))
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_VALID_TIME))
                 .signWith(generateKey())
                 .compact();
@@ -79,11 +79,12 @@ public class JwtUtils {
         ));
     }
 
-    private static Map<String, Object> createClaims(CustomUserDetails userDetails) {
+    private static Map<String, Object> createClaims(JwtUserClaimsDto jwtUserClaimsDto) {
         return new HashMap<>(Map.of(
+                "id", jwtUserClaimsDto.getUserId().toString(),
                 "iss", ISSUER,
-                "email", userDetails.getUsername(),
-                "username", userDetails.getNickname()
+                "email", jwtUserClaimsDto.getUsername(),
+                "username", jwtUserClaimsDto.getNickname()
         ));
     }
 
