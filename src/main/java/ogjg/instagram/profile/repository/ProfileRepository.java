@@ -14,7 +14,7 @@ public interface ProfileRepository extends JpaRepository<User,Long> {
      * 내 피드 목록 가져오기 - 무한 스크롤 9개씩
      */
     @Query("""
-       SELECT NEW ogjg.instagram.profile.dto.ProfileFeedDto (
+       SELECT NEW ogjg.instagram.profile.dto.response.ProfileFeedResponseDto$ProfileFeedDto (
            f.id, 
            (SELECT fm.mediaUrl FROM FeedMedia fm WHERE fm.feed = f ORDER BY fm.id ASC),
            (SELECT COUNT(fm) > 1 FROM FeedMedia fm WHERE fm.feed = f),
