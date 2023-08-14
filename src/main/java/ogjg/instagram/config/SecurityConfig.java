@@ -35,8 +35,10 @@ public class SecurityConfig {
     private final AuthenticationConfiguration authenticationConfiguration;
     private final UserAuthenticationRepository authenticationRepository;
 
-    private final List<String> permitJwtUrlList = new ArrayList<>(List.of(
-            "/api/users/signup"));
+    private final List<String> permitJwtUrlList = new ArrayList<>(
+            List.of("/api/users/signup",
+                       "/api/users/token"
+            ));
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -103,7 +105,7 @@ public class SecurityConfig {
     @Bean
     public JwtAuthenticationFilter jwtAuthenticationFilter() throws Exception {
         JwtAuthenticationFilter jwtAuthFilter = new JwtAuthenticationFilter(
-                authenticationManager(authenticationConfiguration));
+                authenticationManager(authenticationConfiguration), permitJwtUrlList);
         authenticationManagerBuilder.authenticationProvider(jwtAuthenticationProvider());
         jwtAuthFilter.afterPropertiesSet();
         return jwtAuthFilter;
