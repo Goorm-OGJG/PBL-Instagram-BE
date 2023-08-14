@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import ogjg.instagram.user.domain.UserAuthentication;
+import ogjg.instagram.user.dto.JwtUserClaimsDto;
 import ogjg.instagram.user.dto.LoginResponseDto;
 import ogjg.instagram.user.repository.UserAuthenticationRepository;
 import org.springframework.http.MediaType;
@@ -19,7 +20,7 @@ public class LoginAuthSuccessHandler {
 
     private final String AUTH_HEADER = "Authorization";
     private final String REFRESH_TOKEN = "RefreshToken";
-    private final String TOKEN_TYPE = "BEARER";
+    private final String TOKEN_TYPE = "Bearer ";
     private final int EXPIRATION = 60 * 60 * 24 * 30;
 
     private final UserAuthenticationRepository authenticationRepository;
@@ -30,14 +31,20 @@ public class LoginAuthSuccessHandler {
 
         CustomUserDetails userDetails = (CustomUserDetails) authentication.getPrincipal();
 
-        String accessToken = JwtUtils.generateAccessToken(userDetails);
-        String refreshToken = JwtUtils.generateRefreshToken(userDetails);
+        JwtUserClaimsDto userClaimsDto = JwtUserClaimsDto.builder()
+                .userId(userDetails.getUser().getId())
+                .username(userDetails.getUsername())
+                .nickname(userDetails.getNickname())
+                .build();
+
+        String accessToken = JwtUtils.generateAccessToken(userClaimsDto);
+        String refreshToken = JwtUtils.generateRefreshToken(userClaimsDto);
 
         Optional<UserAuthentication> userAuth = getUserAuthentication(userDetails, type);
 
         upsertRefreshTokenToDatabase(userDetails, userAuth, refreshToken);
 
-        response.addHeader(AUTH_HEADER, TOKEN_TYPE + " " + accessToken);
+        response.addHeader(AUTH_HEADER, TOKEN_TYPE + accessToken);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
         response.addCookie(getRefreshTokenCookie(refreshToken));
         response.setCharacterEncoding("UTF-8");
