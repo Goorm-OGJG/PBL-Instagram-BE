@@ -199,3 +199,5 @@ gradle-app.setting
 src/main/resources/application.yaml
 
 table.sql
+
+src/main/generated
