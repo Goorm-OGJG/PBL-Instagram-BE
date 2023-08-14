@@ -32,6 +32,11 @@ public class StoryLikeService {
         storyLikeRepository.deleteStoryLike(storyId, userId);
     }
 
+    public boolean storyLikeStatus(Long userId, Long storyId){
+//        todo 토큰 userId로 변경하기
+        return storyLikeRepository.findStoryLike(userId,storyId)==null;
+    }
+
     public Long storyLikeCount(Long storyId){
         return storyLikeRepository.countLikes(storyId);
     }

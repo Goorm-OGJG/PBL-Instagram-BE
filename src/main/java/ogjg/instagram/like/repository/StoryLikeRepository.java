@@ -1,6 +1,7 @@
 package ogjg.instagram.like.repository;
 
 import ogjg.instagram.like.domain.storyLike.StoryLike;
+import ogjg.instagram.like.dto.StoryLikeDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -15,5 +16,8 @@ public interface StoryLikeRepository extends JpaRepository<StoryLike,Long> {
 
     @Query("select count(*) from StoryLike sl where sl.storyLikePK.storyId=:storyId")
     Long countLikes(@Param("storyId") Long storyId);
+
+    @Query("select new ogjg.instagram.like.dto.StoryLikeDto(sl.storyLikePK.storyId,sl.storyLikePK.userId) from StoryLike sl where sl.storyLikePK.userId = :userId and sl.storyLikePK.storyId = :storyId")
+    StoryLikeDto findStoryLike(@Param("userId") Long userId, @Param("storyId") Long storyId);
 
 }
