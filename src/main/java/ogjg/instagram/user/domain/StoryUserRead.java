@@ -7,6 +7,7 @@ import jakarta.persistence.MapsId;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ogjg.instagram.story.domain.Story;
+import ogjg.instagram.story.dto.request.StoryUserReadDto;
 
 import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
@@ -27,4 +28,10 @@ public class StoryUserRead {
     @ManyToOne(fetch = LAZY)
     private Story story;
 
+
+    public StoryUserRead(StoryUserReadDto storyUserReadDto, User user, Story story) {
+        this.storyUserReadPK = new StoryUserReadPK(storyUserReadDto);
+        this.user = user;
+        this.story = story;
+    }
 }
