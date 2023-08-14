@@ -1,7 +1,11 @@
-package ogjg.instagram.config;
+package ogjg.instagram.config.security;
 
 import lombok.RequiredArgsConstructor;
-import ogjg.instagram.config.security.*;
+import ogjg.instagram.config.security.jwt.JwtAuthenticationFilter;
+import ogjg.instagram.config.security.jwt.JwtAuthenticationProvider;
+import ogjg.instagram.config.security.login.LoginAuthSuccessHandler;
+import ogjg.instagram.config.security.login.LoginAuthenticationFilter;
+import ogjg.instagram.config.security.login.LoginAuthenticationProvider;
 import ogjg.instagram.user.repository.UserAuthenticationRepository;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

@@ -1,4 +1,4 @@
-package ogjg.instagram.config.security;
+package ogjg.instagram.config.security.jwt;
 
 import org.springframework.security.authentication.AbstractAuthenticationToken;
 import org.springframework.security.core.GrantedAuthority;

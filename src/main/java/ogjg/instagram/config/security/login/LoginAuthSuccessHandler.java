@@ -1,10 +1,11 @@
-package ogjg.instagram.config.security;
+package ogjg.instagram.config.security.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import ogjg.instagram.config.security.jwt.JwtUtils;
 import ogjg.instagram.user.domain.UserAuthentication;
 import ogjg.instagram.user.dto.JwtUserClaimsDto;
 import ogjg.instagram.user.dto.LoginResponseDto;

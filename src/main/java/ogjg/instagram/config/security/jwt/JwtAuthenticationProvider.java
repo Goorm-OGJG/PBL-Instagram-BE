@@ -1,4 +1,4 @@
-package ogjg.instagram.config.security;
+package ogjg.instagram.config.security.jwt;
 
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;

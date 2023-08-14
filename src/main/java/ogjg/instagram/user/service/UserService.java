@@ -22,7 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
 
-import static ogjg.instagram.config.security.JwtUtils.*;
+import static ogjg.instagram.config.security.jwt.JwtUtils.*;
 
 @RequiredArgsConstructor
 @Service

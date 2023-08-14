@@ -1,4 +1,4 @@
-package ogjg.instagram.config.security;
+package ogjg.instagram.config.security.login;
 
 import jakarta.annotation.Resource;
 import org.springframework.http.HttpStatus;

@@ -1,4 +1,4 @@
-package ogjg.instagram.config.security;
+package ogjg.instagram.config.security.login;
 
 import lombok.RequiredArgsConstructor;
 import ogjg.instagram.user.domain.User;

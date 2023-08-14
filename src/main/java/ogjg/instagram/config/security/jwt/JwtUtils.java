@@ -1,4 +1,4 @@
-package ogjg.instagram.config.security;
+package ogjg.instagram.config.security.jwt;
 
 import io.jsonwebtoken.*;
 import ogjg.instagram.user.dto.JwtUserClaimsDto;
