@@ -10,6 +10,7 @@ import ogjg.instagram.profile.dto.request.ProfileEditRequestDto;
 import ogjg.instagram.profile.dto.request.ProfileImgEditRequestDto;
 import ogjg.instagram.user.domain.User;
 import ogjg.instagram.user.domain.UserAuthentication;
+import ogjg.instagram.user.dto.JwtUserClaimsDto;
 import ogjg.instagram.user.dto.SignupRequestDto;
 import ogjg.instagram.user.repository.UserAuthenticationRepository;
 import ogjg.instagram.user.repository.UserRepository;
@@ -28,7 +29,6 @@ import static ogjg.instagram.config.security.JwtUtils.*;
 public class UserService {
 
     private final UserRepository userRepository;
-    private final UsersRepository usersRepository;
     private final UserAuthenticationRepository authenticationRepository;
     private final PasswordEncoder passwordEncoder;
 
@@ -63,7 +63,7 @@ public class UserService {
                 .nickname(signupRequestDto.getNickname())
                 .password(passwordEncoder.encode(signupRequestDto.getPassword()))
                 .build();
-        usersRepository.save(user);
+        userRepository.save(user);
         return new ResponseEntity<>("가입 성공", HttpStatus.OK);
     }
 
