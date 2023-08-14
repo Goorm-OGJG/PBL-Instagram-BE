@@ -9,7 +9,9 @@ import lombok.RequiredArgsConstructor;
 import ogjg.instagram.profile.dto.request.ProfileEditRequestDto;
 import ogjg.instagram.profile.dto.request.ProfileImgEditRequestDto;
 import ogjg.instagram.user.domain.User;
+import ogjg.instagram.user.domain.UserAuthentication;
 import ogjg.instagram.user.dto.SignupRequestDto;
+import ogjg.instagram.user.repository.UserAuthenticationRepository;
 import ogjg.instagram.user.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -18,6 +20,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+
+import static ogjg.instagram.config.security.JwtUtils.*;
 
 @RequiredArgsConstructor
 @Service
