@@ -40,9 +40,10 @@ public class CollectionFeed {
         this.user = user;
     }
 
-    public static CollectionFeed of(Feed feed, User user) {
+    public static CollectionFeed of(Feed feed, Collection collection, User user) {
         return CollectionFeed.builder()
-                .collectionFeedPK(new CollectionFeedPK(feed.getId(), 0L, user.getId())) //todo: collectionId 상수처리
+                .collectionFeedPK(new CollectionFeedPK(feed.getId(), 1L, user.getId())) //todo: collectionId 상수처리
+                .collection(collection)
                 .feed(feed)
                 .user(user)
                 .build();
