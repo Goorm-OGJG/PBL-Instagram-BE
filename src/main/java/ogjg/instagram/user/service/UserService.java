@@ -59,7 +59,7 @@ public class UserService {
     public ResponseEntity<?> registerUser(SignupRequestDto signupRequestDto) {
         User user = User.builder()
                 .email(signupRequestDto.getEmail())
-                .userName(signupRequestDto.getUserName())
+                .userName(signupRequestDto.getUsername())
                 .nickname(signupRequestDto.getNickname())
                 .password(passwordEncoder.encode(signupRequestDto.getPassword()))
                 .build();
@@ -86,6 +86,7 @@ public class UserService {
 
     private static String getAccessToken(UserAuthentication userAuth) {
         JwtUserClaimsDto userClaimsDto = JwtUserClaimsDto.builder()
+                .userId(userAuth.getId())
                 .username(userAuth.getUsername())
                 .nickname(userAuth.getNickname())
                 .build();
@@ -94,7 +95,7 @@ public class UserService {
 
     private UserAuthentication getUserAuthentication(String refreshToken) {
         Claims claims = getClaims(refreshToken);
-        String username = (String) claims.get("sub");
+        String username = (String) claims.get("email");
 
         return authenticationRepository.findByUsername(username).orElseThrow(
                 () -> new JwtException("Refresh Token을 찾을 수 없습니다."));
