@@ -3,8 +3,10 @@ package ogjg.instagram.comment.controller;
 import lombok.RequiredArgsConstructor;
 import ogjg.instagram.comment.dto.request.InnerCommentCreateRequestDto;
 import ogjg.instagram.comment.service.InnerCommentService;
+import ogjg.instagram.config.security.jwt.JwtUserDetails;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -20,11 +22,13 @@ public class InnerCommentController {
     @PostMapping("/comments/{commentId}/inner-comment")
     public ResponseEntity<?> writeInnerComment(
             @RequestBody InnerCommentCreateRequestDto requestDto,
-            @PathVariable("commentId") Long commentId
+            @PathVariable("commentId") Long commentId,
+            @AuthenticationPrincipal JwtUserDetails userDetails
     ) {
-        Long jwt_myId = 1L;
+        Long loginId = userDetails.getUserId();
 
-        innerCommentService.write(jwt_myId, commentId, requestDto);
+
+        innerCommentService.write(loginId, commentId, requestDto);
         return ResponseEntity.ok().build();
     }
 
@@ -33,13 +37,15 @@ public class InnerCommentController {
      */
     @DeleteMapping("/inner-comments/{innerCommentId}")
     public ResponseEntity<?> deleteInnerComment(
-            @PathVariable("innerCommentId") Long innerCommentId
+            @PathVariable("innerCommentId") Long innerCommentId,
+            @AuthenticationPrincipal JwtUserDetails userDetails
 
     ) {
-        Long jwt_myId = 1L;
+        Long loginId = userDetails.getUserId();
+
 
         return ResponseEntity.ok(
-                innerCommentService.delete(jwt_myId, innerCommentId)
+                innerCommentService.delete(loginId, innerCommentId)
         );
     }
 }
