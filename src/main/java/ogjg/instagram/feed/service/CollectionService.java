@@ -30,6 +30,7 @@ public class CollectionService {
 
     @Transactional
     public void deleteFeed(Long feedId, Long collectionID,Long userId) {
+        // todo : 존재하지 않는 Collection 검증 로직
         collectionFeedRepository.deleteBy(feedId, collectionID,userId);
     }
 

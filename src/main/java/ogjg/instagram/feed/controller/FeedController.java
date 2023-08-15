@@ -1,6 +1,7 @@
 package ogjg.instagram.feed.controller;
 
 import lombok.RequiredArgsConstructor;
+import ogjg.instagram.config.security.jwt.JwtUserDetails;
 import ogjg.instagram.feed.dto.request.FeedCreateRequestDto;
 import ogjg.instagram.feed.service.FeedService;
 import org.springframework.data.domain.Pageable;
@@ -8,6 +9,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -21,10 +23,11 @@ public class FeedController {
      */
     @GetMapping("")
     public ResponseEntity<?> feedList(
-            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.ASC) Pageable pageable
+            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.ASC) Pageable pageable,
+            @AuthenticationPrincipal JwtUserDetails userDetails
             ) {
-        Long jwt_myId = 1L;
-        return ResponseEntity.ok(feedService.findFeedList(jwt_myId, pageable));
+        Long loginId = userDetails.getUserId();
+        return ResponseEntity.ok(feedService.findFeedList(loginId, pageable));
     }
 
     /**
@@ -32,22 +35,23 @@ public class FeedController {
      */
     @GetMapping("/{feedId}")
     public ResponseEntity<?> feedDetail(
-            @PathVariable("feedId") Long feedId
+            @PathVariable("feedId") Long feedId,
+            @AuthenticationPrincipal JwtUserDetails userDetails
     ) {
-        Long jwt_myId = 1L;
-
-        return ResponseEntity.ok(feedService.findDetail(feedId, jwt_myId));
+        Long loginId = userDetails.getUserId();
+        return ResponseEntity.ok(feedService.findDetail(feedId, loginId));
     }
 
-    //todo: crud 완료 후 id 등 내려주기
     /**
      * 피드 작성
      */
     @PostMapping("")
-    public ResponseEntity<?> writeFeed(@RequestBody FeedCreateRequestDto requestDto) {
-        Long jwt_myId = 1L;
+    public ResponseEntity<?> writeFeed(@RequestBody FeedCreateRequestDto requestDto,
+                                       @AuthenticationPrincipal JwtUserDetails userDetails
+    ) {
+        Long loginId = userDetails.getUserId();
 
-        feedService.write(jwt_myId, requestDto);
+        feedService.write(loginId, requestDto);
         return ResponseEntity.ok().build();
     }
 
@@ -56,10 +60,12 @@ public class FeedController {
      */
     @DeleteMapping("/{feedId}")
     public ResponseEntity<?> deleteFeed(
-            @PathVariable Long feedId) {
-        Long jwt_myId = 1L;
+            @PathVariable Long feedId,
+            @AuthenticationPrincipal JwtUserDetails userDetails
+    ) {
+        Long loginId = userDetails.getUserId();
 
-        feedService.delete(jwt_myId, feedId);
+        feedService.delete(loginId, feedId);
         return ResponseEntity.ok().build();
     }
 }
