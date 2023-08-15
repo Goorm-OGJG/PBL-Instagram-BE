@@ -16,6 +16,8 @@ public class UserAuthentication {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    private Long userId;
+
     private String username;
 
     private String nickname;
@@ -24,8 +26,9 @@ public class UserAuthentication {
     private String refreshToken;
 
     @Builder
-    public UserAuthentication(Long id, String username, String nickname, String refreshToken) {
+    public UserAuthentication(Long id, Long userId, String username, String nickname, String refreshToken) {
         this.id = id;
+        this.userId = userId;
         this.username = username;
         this.nickname = nickname;
         this.refreshToken = refreshToken;

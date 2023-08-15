@@ -41,7 +41,7 @@ public class JwtUtils {
     public static String generateRefreshToken(JwtUserClaimsDto userClaimsDto) {
         return Jwts.builder()
                 .setHeader(createHeader())
-                .setClaims(new HashMap<>(Map.of("iss", ISSUER, "sub", userClaimsDto.getUsername())))
+                .setClaims(createClaims(userClaimsDto))
                 .setExpiration(new Date(System.currentTimeMillis() + REFRESH_TOKEN_VALID_TIME))
                 .signWith(generateKey())
                 .compact();
