@@ -1,6 +1,7 @@
 package ogjg.instagram.comment.controller;
 
 import lombok.RequiredArgsConstructor;
+import ogjg.instagram.comment.dto.request.CommentCreateRequestDto;
 import ogjg.instagram.comment.dto.response.InnerCommentListResponseDto;
 import ogjg.instagram.comment.service.CommentService;
 import ogjg.instagram.config.security.jwt.JwtUserDetails;
@@ -35,13 +36,13 @@ public class CommentController {
      */
     @PostMapping("/feeds/{feedId}/comments")
     public ResponseEntity<?> writeComment(
-            @RequestBody String content,
+            @RequestBody CommentCreateRequestDto requestDto,
             @PathVariable("feedId") Long feedId,
             @AuthenticationPrincipal JwtUserDetails userDetails
     ) {
         Long loginId = userDetails.getUserId();
 
-        commentService.write(feedId, content); //todo : id 반환받아서 내려주기
+        commentService.write(loginId, feedId, requestDto); //todo : id 반환받아서 내려주기
         return ResponseEntity.ok().build();
     }
 
