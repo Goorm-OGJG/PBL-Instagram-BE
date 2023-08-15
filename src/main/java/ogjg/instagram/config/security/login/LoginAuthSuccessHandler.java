@@ -74,6 +74,7 @@ public class LoginAuthSuccessHandler {
         }
         if (userAuth.isEmpty()) {
             UserAuthentication savedUserAuth = UserAuthentication.builder()
+                    .userId(userDetails.getUser().getId())
                     .username(userDetails.getUsername())
                     .nickname(userDetails.getNickname())
                     .refreshToken(refreshToken)
