@@ -27,20 +27,20 @@ public class CommentLikeService {
 
     @Transactional
     public void commentLike(Long userId,Long commentId ){
-//        todo 토큰 userId로 변경하기
         CommentLikeDto commentLikeDto = new CommentLikeDto(commentId,userId);
-        commentLikeRepository.save(new CommentLike(commentLikeDto, userFindByUserId(userId), commentFindByCommentId(commentId)));
+        commentLikeRepository.save(
+                new CommentLike(commentLikeDto, userFindByUserId(userId), commentFindByCommentId(commentId))
+        );
     }
 
     @Transactional
     public void commentUnlike(Long commentId, Long userId){
-//        todo 토큰 userId로 변경하기
         commentLikeRepository.deleteCommentLike(commentId, userId);
     }
 
     public List<CommentLikeUserResponse> commentLikeList(Long commentId, Long userId, Pageable pageable){
-//        todo 토큰 userId로 변경하기
-        return commentLikeRepository.commentLikeUserList(commentId, pageable).stream()
+        return commentLikeRepository.commentLikeUserList(commentId, pageable)
+                .stream()
                 .map(commentLikeUserResponse -> commentLikeUserResponse.putFollowStatus(
                         followRepository.followerMeToo(userId , commentLikeUserResponse.getUserId())== null))
                 .toList();
@@ -59,7 +59,6 @@ public class CommentLikeService {
         return commentRepository.findById(commentId)
                 .orElseThrow(()->new IllegalArgumentException(commentId + ": 댓글를 찾을 수 없습니다"));
     }
-
 
     public boolean isCommentLiked(Long commentId, Long userId) {
         return commentLikeRepository.checkLikeStatus(commentId, userId).isPresent();

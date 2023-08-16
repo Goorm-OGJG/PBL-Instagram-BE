@@ -15,21 +15,20 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class InnerCommentLikeService {
 
-
     private final InnerCommentLikeRepository innerCommentLikeRepository;
     private final UserRepository userRepository;
     private final InnerCommentRepository innerCommentRepository;
 
     @Transactional
     public void innerCommentLike(Long userId,Long innerCommentId ){
-//        todo 토큰 userId로 변경하기
         InnerCommentLikeDto innerCommentLikeDto= new InnerCommentLikeDto(innerCommentId,userId);
-        innerCommentLikeRepository.save(new InnerCommentLike(innerCommentLikeDto, userFindByUserId(userId), innerCommentFindById(innerCommentId)));
+        innerCommentLikeRepository.save(
+                new InnerCommentLike(innerCommentLikeDto, userFindByUserId(userId), innerCommentFindById(innerCommentId))
+        );
     }
 
     @Transactional
     public void innerCommentUnlike(Long innerCommentId, Long userId){
-//        todo 토큰 userId로 변경하기
         innerCommentLikeRepository.deleteInnerCommentLike(innerCommentId, userId);
     }
 
