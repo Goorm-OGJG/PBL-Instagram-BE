@@ -10,23 +10,35 @@ import java.util.List;
 
 public interface FollowRepository extends JpaRepository<Follow, Long> {
 
-
-//  내가 팔로우 한놈들
     @Query("select count(f) from Follow f where f.followPK.userId = :userId")
     Long followingCount(@Param("userId") Long userId);
 
-//    todo join해서 프로필 정보넘기기
-    @Query("select new ogjg.instagram.follow.response.FollowResponse(f.followPK.userId, f.followPK.followId) from Follow f where f.followPK.userId = :userId")
+    @Query("""
+    select new ogjg.instagram.follow.response.FollowResponse(f.followPK.userId, f.followPK.followId, u.nickname, u.userImg) 
+    from Follow f 
+    join User u
+    on f.followPK.followId = u.id
+    where f.followPK.userId = :userId 
+    """)
     List<FollowResponse> FollowingList(@Param("userId")Long userId);
 
-//  날 팔로우 한놈들
     @Query("select count(f) from Follow f where f.followPK.followId = :userId")
     Long followerCount(@Param("userId")Long userId);
 
-//    todo join해서 프로필 정보넘기기
-    @Query("select new ogjg.instagram.follow.response.FollowResponse(f.followPK.userId, f.followPK.followId) from Follow f where f.followPK.followId = :userId")
+    @Query("""
+    select new ogjg.instagram.follow.response.FollowResponse(f.followPK.userId, f.followPK.followId, u.nickname, u.userImg) 
+    from Follow f 
+    join User u
+    on f.followPK.userId = u.id
+    where f.followPK.followId = :userId
+    """)
     List<FollowResponse> followerList(@Param("userId") Long userId);
 
-    @Query("select new ogjg.instagram.follow.response.FollowResponse(f.followPK.userId, f.followPK.followId) from Follow f where f.followPK.userId = :userId and f.followPK.followId = :followId")
+    @Query("""
+    select new ogjg.instagram.follow.response.FollowResponse(f.followPK.userId, f.followPK.followId) 
+    from Follow f 
+    where f.followPK.userId = :userId 
+    and f.followPK.followId = :followId 
+    """)
     FollowResponse followerMeToo(@Param("userId") Long userId, @Param("followId") Long followId);
 }
