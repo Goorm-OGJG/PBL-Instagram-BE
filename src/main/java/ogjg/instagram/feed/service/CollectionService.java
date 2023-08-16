@@ -29,9 +29,11 @@ public class CollectionService {
     }
 
     @Transactional
-    public void deleteFeed(Long feedId, Long collectionID,Long userId) {
-        // todo : 존재하지 않는 Collection 검증 로직
-        collectionFeedRepository.deleteBy(feedId, collectionID,userId);
+    public void deleteFeed(Long feedId, Long collectionId,Long userId) {
+        collectionFeedRepository.findById(feedId, collectionId, userId)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 컬렉션입니다. id=" + collectionId));
+
+        collectionFeedRepository.deleteBy(feedId, collectionId,userId);
     }
 
     @Transactional(readOnly = true)

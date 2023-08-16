@@ -26,6 +26,7 @@ public class CommentService {
 
     @Transactional
     public List<InnerComment> findInnerComments(Long commentId) {
+        commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("답글을 달기 위한 댓글이 존재하지 않습니다. id = " + commentId));
         return innerCommentRepository.findAllById(commentId);
     }
 

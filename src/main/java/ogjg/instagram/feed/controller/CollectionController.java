@@ -44,7 +44,7 @@ public class CollectionController {
         Long loginId = userDetails.getUserId();
         log.info("loginId = {}", loginId);
 
-        collectionService.deleteFeed(feedId, FIXED_COLLECTION_ID, loginId); // todo : collectionId 상수처리
+        collectionService.deleteFeed(feedId, FIXED_COLLECTION_ID, loginId);
         return ResponseEntity.ok().build();
     }
 }

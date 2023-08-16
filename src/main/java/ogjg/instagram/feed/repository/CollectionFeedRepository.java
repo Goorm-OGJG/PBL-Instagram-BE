@@ -28,5 +28,13 @@ public interface CollectionFeedRepository extends JpaRepository<CollectionFeed, 
         and cf.collection.id = :collectionId
     """)
     void deleteBy(@Param("feedId") Long feedId, @Param("collectionId") Long collectionId, @Param("userId") Long userId);
+
+    @Query("""
+        select cf from CollectionFeed cf
+        where cf.feed.id = :feedId
+        and cf.user.id = :userId
+        and cf.collection.id = :collectionId
+    """)
+    Optional<CollectionFeed> findById(@Param("feedId") Long feedId, @Param("collectionId") Long collectionId, @Param("userId") Long userId);
 }
 

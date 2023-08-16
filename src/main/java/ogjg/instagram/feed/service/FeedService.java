@@ -50,6 +50,7 @@ public class FeedService {
 
     @Transactional(readOnly = true)
     public ProfileFeedResponseDto findProfileFeedsByUserId(Long userId, Pageable pageable) {
+        userService.findById(userId);
         return ProfileFeedResponseDto.from(profileRepository.findMyFeedsByUserId(userId, pageable));
     }
 
@@ -92,8 +93,9 @@ public class FeedService {
 
     @Transactional
     public void delete(Long userId, Long feedId) {
-        if (notMyFeed(userId, feedId)) throw new IllegalArgumentException("본인의 게시글만 삭제할 수 있습니다.");  // todo : 다른사람 글 삭제 불가 : 에러핸들링
+        if (notMyFeed(userId, feedId)) throw new IllegalArgumentException("본인의 게시글만 삭제할 수 있습니다.");
 
+        // todo : cascade는 쿼리문이 여러개 나간다.
         Feed feed = findById(feedId);
         feed.clearAll();
 //        feedRepository.deleteById(feedId);
