@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -20,7 +19,7 @@ import java.util.stream.Collectors;
 public class FollowService {
 
     private final FollowRepository followRepository;
-    private final UserRepository usersRepository;
+    private final UserRepository userRepository;
 
     @Transactional
     public void follow(
@@ -31,8 +30,9 @@ public class FollowService {
                 .userId(userId)
                 .build();
 
-//      todo 나중에 User가 생기면 User로 변경하고 삭제해야함
-        followRepository.save(new Follow(followResponse, findUser(userId), findUser(followId)));
+        followRepository.save(
+                new Follow(followResponse, findUser(userId), findUser(followId))
+        );
     }
 
     @Transactional
@@ -45,12 +45,11 @@ public class FollowService {
                 .userId(userId)
                 .build();
 
-        //      todo 나중에 User가 생기면 User로 변경하고 삭제해야함
         followRepository.delete(new Follow(followResponse, findUser(userId), findUser(followId)));
     }
 
     private User findUser(Long userId){
-        return usersRepository.findById(userId)
+        return userRepository.findById(userId)
                 .orElseThrow(()-> new IllegalArgumentException("사용자를 찾을 수 없습니다" + userId));
     }
 
@@ -59,7 +58,6 @@ public class FollowService {
         return followRepository.FollowingList(userId);
     }
 
-//    false 는 팔로우를 안함
     @Transactional(readOnly = true)
     public List<FollowedResponse> followedList(Long userId){
         return followRepository.followerList(userId)
@@ -93,7 +91,8 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<Long> getFollowedIds(Long id) {
         return followedList(id).stream()
-                .map((followedResponse ->  followedResponse.getFollowId()))
-                .collect(Collectors.toUnmodifiableList());
+                .map((FollowedResponse::getFollowId))
+                .toList();
     }
+
 }
