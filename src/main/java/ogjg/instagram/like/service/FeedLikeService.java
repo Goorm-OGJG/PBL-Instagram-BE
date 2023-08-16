@@ -20,35 +20,39 @@ import java.util.List;
 @RequiredArgsConstructor
 public class FeedLikeService {
 
-
     private final FeedLikeRepository feedLikeRepository;
     private final UserRepository userRepository;
     private final FeedRepository feedRepository;
     private final FollowRepository followRepository;
 
     @Transactional
-    public void feedLike(Long userId,Long feedId ){
-//        todo 토큰 userId로 변경하기
+    public void feedLike(Long userId,Long feedId){
         FeedLikeDto feedLikeDto = new FeedLikeDto(feedId,userId);
-        feedLikeRepository.save(new FeedLike(feedLikeDto,userFindByUserId(userId), feedFindByFeedId(feedId)));
+        feedLikeRepository.save(
+                new FeedLike(feedLikeDto,userFindByUserId(userId), feedFindByFeedId(feedId))
+        );
     }
 
     @Transactional
     public void feedUnlike(Long feedId, Long userId){
-//        todo 토큰 userId로 변경하기
         feedLikeRepository.deleteFeedLike(feedId, userId);
     }
 
     public List<FeedLikeUserResponse> feedLikeList(Long feedId, Long userId, Pageable pageable){
-//        todo 토큰 userId로 변경하기
-        return feedLikeRepository.feedLikeUserList(feedId, pageable).stream()
+        return feedLikeRepository.feedLikeUserList(feedId, pageable)
+                .stream()
                 .map(feedLikeUserResponse -> feedLikeUserResponse.putFollowStatus(
-                        followRepository.followerMeToo(userId , feedLikeUserResponse.getUserId())== null))
+                        followRepository.followerMeToo(userId , feedLikeUserResponse.getUserId())== null)
+                )
                 .toList();
     }
 
     public Long feedLikeCount(Long feedId){
         return feedLikeRepository.countLikes(feedId);
+    }
+
+    public boolean isFeedLiked(Long feedId, Long userId) {
+        return feedLikeRepository.checkLikeStatus(feedId, userId).isPresent();
     }
 
     private User userFindByUserId(Long userId){
@@ -61,7 +65,4 @@ public class FeedLikeService {
                 .orElseThrow(()->new IllegalArgumentException(feedId + ": 피드를 찾을 수 없습니다"));
     }
 
-    public boolean isFeedLiked(Long feedId, Long userId) {
-        return feedLikeRepository.checkLikeStatus(feedId, userId).isPresent();
-    }
 }
