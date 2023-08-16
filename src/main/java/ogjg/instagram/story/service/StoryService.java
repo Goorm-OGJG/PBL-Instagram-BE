@@ -31,40 +31,37 @@ public class StoryService {
     private final UserRepository userRepository;
 
     public List<StoryListDto> storyList(Long userId){
-        return storyRepository.storyList().stream().map(
-                storyListDto -> storyListDto.putMediaList(
-                        storyMediaList(userId,storyListDto.getStoryId())
-                )
-                .putReadAll(showStoryRead(storyListDto.getStoryId(),userId))
-        ).toList();
+        return storyRepository.storyList()
+                .stream()
+                .map(storyListDto -> storyListDto.putMediaList(
+                        storyMediaList(userId,storyListDto.getStoryId()))
+                .putReadAll(
+                        showStoryRead(storyListDto.getStoryId(),userId)))
+                .toList();
     }
 
     @Transactional
     public void storySave(Long userId, StoryMediaListDto storyMedia){
-//        todo security 로 내 id받아올 예정
         Story story = storyRepository.save(new Story(findUser(userId)));
 
-        storyMedia.getMediaList().forEach(
-                storyMediaUrl -> storyMediaRepository.save(
+        storyMedia.getMediaList()
+                .forEach(storyMediaUrl -> storyMediaRepository.save(
                         new StoryMedia(
-                                new StoryMediaSaveDto(
-                                        findStory(story.getId()), storyMediaType(storyMediaUrl), storyMediaUrl
-                                )
+                                new StoryMediaSaveDto(findStory(story.getId()), storyMediaType(storyMediaUrl), storyMediaUrl)
+
                         )
                 )
         );
     }
 
     @Transactional
-    public void storyDelete(Long storyId, Long userId){
-//        todo userId를 통해 권한이 있는지 확인
+    public void storyDelete(Long storyId){
         storyMediaRepository.mediaDeleteAll(storyId);
         storyRepository.deleteById(storyId);
     }
 
     @Transactional
     public void storyReadSave(Long storyId,Long userId){
-//        todo security 로 내 id받아올 예정
         StoryUserReadDto storyUserRead = new StoryUserReadDto(storyId,userId);
 
         if(showStoryRead(storyId,userId)){
@@ -84,7 +81,6 @@ public class StoryService {
     }
 
     private boolean showStoryRead(Long storyId,Long userId){
-//        todo security 로 내 id받아올 예정
         return storyReadRepository.showStoryRead(userId, storyId).isEmpty();
     }
 
@@ -105,6 +101,5 @@ public class StoryService {
         return storyRepository.findById(storyId)
                 .orElseThrow(()-> new IllegalArgumentException("스토리를 찾을 수 없습니다" + storyId));
     }
-
 
 }
