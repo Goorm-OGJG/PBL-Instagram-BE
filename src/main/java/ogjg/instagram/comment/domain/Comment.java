@@ -53,9 +53,10 @@ public class Comment {
         this.createdAt = createdAt;
     }
 
-    public static Comment from(Feed findFeed, String content) {
+    public static Comment from(User user, Feed feed, String content) {
         return Comment.builder()
-                .feed(findFeed)
+                .user(user)
+                .feed(feed)
                 .content(content)
                 .build();
     }

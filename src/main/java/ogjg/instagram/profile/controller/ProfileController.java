@@ -1,6 +1,7 @@
 package ogjg.instagram.profile.controller;
 
 import lombok.RequiredArgsConstructor;
+import ogjg.instagram.config.security.jwt.JwtUserDetails;
 import ogjg.instagram.feed.service.FeedService;
 import ogjg.instagram.profile.dto.request.ProfileEditRequestDto;
 import ogjg.instagram.profile.dto.request.ProfileImgEditRequestDto;
@@ -12,6 +13,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 //todo : profile 서비스로 통합 고려
@@ -29,11 +31,14 @@ public class ProfileController {
      * 프로필 가져오기
      */
     @GetMapping("/{userId}")
-    public ResponseEntity<?> profile(@PathVariable("userId") Long userId) {
-        Long jwt_myId = 1L;
+    public ResponseEntity<?> profile(
+            @PathVariable("userId") Long userId,
+            @AuthenticationPrincipal JwtUserDetails userDetails
+    ) {
+        Long loginId = userDetails.getUserId();
 
         return ResponseEntity.ok(
-                profileService.findProfile(userId, jwt_myId));
+                profileService.findProfile(userId, loginId));
     }
 
     /**
@@ -43,9 +48,10 @@ public class ProfileController {
     public ResponseEntity<?> myFeeds(
             @PathVariable ("userId") Long userId,
             @PageableDefault(page = 0, size = 9, sort = "id", direction = Sort.Direction.ASC)
-            Pageable pageable
+            Pageable pageable,
+            @AuthenticationPrincipal JwtUserDetails userDetails
     ) {
-        Long jwt_myId = 1L;
+        Long loginId = userDetails.getUserId();
 
         return ResponseEntity.ok(
                 feedService.findProfileFeedsByUserId(userId, pageable));
@@ -57,33 +63,37 @@ public class ProfileController {
     @GetMapping("/collected-feeds")
     public ResponseEntity<?> collectedFeeds(
             @PageableDefault(page = 0, size = 9, sort = "id", direction = Sort.Direction.ASC)
-            Pageable pageable
+            Pageable pageable,
+            @AuthenticationPrincipal JwtUserDetails userDetails
     ) {
-        Long jwt_myId = 1L;
+        Long loginId = userDetails.getUserId();
 
         return ResponseEntity.ok(
-                profileService.findCollectedFeeds(jwt_myId, pageable));
+                profileService.findCollectedFeeds(loginId, pageable));
     }
 
     /**
      * 프로필 수정 페이지 보기
      */
     @GetMapping("/profile")
-    public ResponseEntity<?> editProfile() {
-        Long jwt_myId = 1L;
+    public ResponseEntity<?> editProfile(
+            @AuthenticationPrincipal JwtUserDetails userDetails
+    ) {
+        Long loginId = userDetails.getUserId();
 
         return ResponseEntity.ok(
-                ProfileEditResponseDto.from(userService.findById(jwt_myId)));
+                ProfileEditResponseDto.from(userService.findById(loginId)));
     }
 
     /**
      * 프로필 수정
      */
     @PutMapping("")
-    public ResponseEntity<?> editProfile(@RequestBody ProfileEditRequestDto requestDto) {
-        Long jwt_myId = 1L;
+    public ResponseEntity<?> editProfile(@RequestBody ProfileEditRequestDto requestDto,
+            @AuthenticationPrincipal JwtUserDetails userDetails) {
+        Long loginId = userDetails.getUserId();
 
-        userService.save(jwt_myId, requestDto);
+        userService.save(loginId, requestDto);
         return ResponseEntity.ok().build();
     }
 
@@ -91,10 +101,11 @@ public class ProfileController {
      * 프로필 이미지 수정
      */
     @PutMapping("/img")
-    public ResponseEntity<?> editProfileImg(@RequestBody ProfileImgEditRequestDto requestDto) {
-        Long jwt_myId = 1L;
+    public ResponseEntity<?> editProfileImg(@RequestBody ProfileImgEditRequestDto requestDto,
+            @AuthenticationPrincipal JwtUserDetails userDetails) {
+        Long loginId = userDetails.getUserId();
 
-        userService.saveImg(jwt_myId, requestDto);
+        userService.saveImg(loginId, requestDto);
         return ResponseEntity.ok().build();
     }
 

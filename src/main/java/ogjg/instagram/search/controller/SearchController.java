@@ -1,11 +1,13 @@
 package ogjg.instagram.search.controller;
 
 import lombok.RequiredArgsConstructor;
+import ogjg.instagram.config.security.jwt.JwtUserDetails;
 import ogjg.instagram.search.service.SearchService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
@@ -19,10 +21,11 @@ public class SearchController {
     public ResponseEntity<?> search(
             @RequestParam("search") String search,
             @RequestParam("type") String type,
-            @PageableDefault(page = 0, size = 10) Pageable pageable
+            @PageableDefault(page = 0, size = 10) Pageable pageable,
+            @AuthenticationPrincipal JwtUserDetails userDetails
             ) {
 
-        Long jwt_myId = 1L;
+        Long loginId = userDetails.getUserId();
         boolean isUser;
 
         // todo : type enum, factory 고려
@@ -30,10 +33,10 @@ public class SearchController {
             return ResponseEntity.ok(searchService.searchByHashtag(isUser = false, search, pageable));
 
         } else if (type.trim().equals("user")) {
-            return ResponseEntity.ok(searchService.searchByNickname(isUser = true, jwt_myId, search, pageable));
+            return ResponseEntity.ok(searchService.searchByNickname(isUser = true, loginId, search, pageable));
 
         } else {
-            throw new IllegalArgumentException("잘못된 타입입니다.");
+            throw new IllegalArgumentException("잘못된 검색 타입입니다.");
         }
     }
 
@@ -42,7 +45,10 @@ public class SearchController {
      * todo: 구현 보류
      */
     @GetMapping("{hashtag}/feed")
-    public ResponseEntity<?> searchHashTag(@PathVariable("hashtag") String hashtag) {
+    public ResponseEntity<?> searchHashTag(@PathVariable("hashtag") String hashtag,
+            @AuthenticationPrincipal JwtUserDetails userDetails
+    ) {
+        Long loginId = userDetails.getUserId();
         return ResponseEntity.ok().build();
     }
 
