@@ -59,7 +59,7 @@ public class UserService {
     public ResponseEntity<?> registerUser(SignupRequestDto signupRequestDto) {
         User user = User.builder()
                 .email(signupRequestDto.getEmail())
-                .userName(signupRequestDto.getUserName())
+                .userName(signupRequestDto.getUsername())
                 .nickname(signupRequestDto.getNickname())
                 .password(passwordEncoder.encode(signupRequestDto.getPassword()))
                 .build();
