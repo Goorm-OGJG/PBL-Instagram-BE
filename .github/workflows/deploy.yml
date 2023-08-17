@@ -22,7 +22,7 @@ jobs:
           distribution: 'corretto'
 
       - name: Create application.properties
-        run: echo $"${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
+        run: echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
