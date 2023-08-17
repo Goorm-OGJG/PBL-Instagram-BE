@@ -5,6 +5,7 @@ on:
     branches: [feature/CICD-test]
 
 permissions:
+  id-token: write
   contents: read
 
 jobs:
