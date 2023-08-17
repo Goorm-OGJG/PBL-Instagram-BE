@@ -2,7 +2,7 @@ name: Deploy
 
 on:
   push:
-    branches: [feature/CICD-test]
+    branches: [ feature/CICD-test ]
 
 permissions:
   id-token: write
@@ -46,17 +46,18 @@ jobs:
       - name: Create Dockerrun.aws.json
         run: |
           echo '{
-            "AWSEBDockerrunVersion": "1",
-            "Image": {
-              "Name": "${{ env.DOCKER_TAG }}",
-              "Update": "true"
-            },
-            "Ports": [
-              {
-                "ContainerPort": "80"
-              }
-            ]
-          }' > Dockerrun.aws.json
+                  "AWSEBDockerrunVersion": "1",
+                  "Ports": [
+                      {
+                        "ContainerPort": "8080",
+                        "HostPort": "8080"
+                      }
+                  ],
+                  "Image": {
+                    "Name": "${{ env.DOCKER_TAG }}",
+                    "Update": "true"
+                  }
+                }' > Dockerrun.aws.json
 
       - name: Zip the Dockerrun file
         run: zip deployment.zip Dockerrun.aws.json
