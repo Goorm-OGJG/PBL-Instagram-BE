@@ -78,4 +78,4 @@ jobs:
           environment_name: OGJG-env
           version_label: ${{ github.run_id }}
           region: ${{ secrets.AWS_REGION }}
-          zip_file: deployment.zip
+          deployment_package: deployment.zip
