@@ -34,7 +34,7 @@ jobs:
         id: extract_version
         run: |
           VERSION=$(echo ./build/libs/instagram-0.0.1-SNAPSHOT.jar | sed -r 's/.*instagram-([0-9.]+)-SNAPSHOT\.jar/\1/')
-          echo "DOCKER_TAG=ogjg-instagram:$VERSION" >> $GITHUB_ENV
+          echo "DOCKER_TAG=${{ secrets.DOCKER_HUB_USERNAME }}/ogjg-instagram:$VERSION" >> $GITHUB_ENV
 
       - name: Create Dockerrun.aws.json
         run: |
