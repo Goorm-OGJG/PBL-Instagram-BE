@@ -23,9 +23,8 @@ jobs:
 
       - name: Create application.properties
         run: |
-          mkdir -p ./src/main/resources
+          mkdir ./src/main/resources
           echo "${{ secrets.APPLICATION }}" > ./src/main/resources/application.properties
-          cat ./src/main/resources/application.properties
 
       - name: Grant execute permission for gradlew
         run: chmod +x gradlew
