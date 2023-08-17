@@ -42,7 +42,7 @@ jobs:
           echo '{
             "AWSEBDockerrunVersion": "1",
             "Image": {
-              "Name": "${{ secrets.DOCKERHUB_USERNAME }}/${{ env.DOCKER_TAG }}",
+              "Name": "${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_TAG }}",
               "Update": "true"
             },
             "Ports": [
@@ -61,9 +61,6 @@ jobs:
           context: .
           push: true
           tags: ${{ env.DOCKER_TAG }}
-
-      - name: Checkout
-        uses: actions/checkout@v2
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
