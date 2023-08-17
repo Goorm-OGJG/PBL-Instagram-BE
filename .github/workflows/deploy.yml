@@ -42,7 +42,7 @@ jobs:
           echo '{
             "AWSEBDockerrunVersion": "1",
             "Image": {
-              "Name": "${{ secrets.DOCKER_HUB_USERNAME }}/${{ env.DOCKER_TAG }}",
+              "Name": "${{ env.DOCKER_TAG }}",
               "Update": "true"
             },
             "Ports": [
