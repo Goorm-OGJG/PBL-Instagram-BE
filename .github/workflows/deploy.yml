@@ -80,3 +80,4 @@ jobs:
           region: ${{ secrets.AWS_REGION }}
           deployment_package: deployment.zip
           use_existing_version_if_available: true
+          wait_for_environment_recovery: 300
