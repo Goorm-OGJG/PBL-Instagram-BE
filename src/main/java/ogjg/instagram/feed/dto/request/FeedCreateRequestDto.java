@@ -25,17 +25,18 @@ public class FeedCreateRequestDto {
 
     public Feed toFeed(User user) {
         Feed feed = buildFeed(user);
-        List<FeedMedia> medias = buildMedias();
+        List<FeedMedia> medias = buildMedias(feed);
 
         feed.addAllMedias(medias);
         return feed;
     }
 
-    private List<FeedMedia> buildMedias() {
+    private List<FeedMedia> buildMedias(Feed feed) {
         List<FeedMedia> medias = mediaUrls.stream()
                 .map((url) -> FeedMedia.builder()
+                        .feed(feed)
                         .mediaUrl(url)
-                        .mediaType(substringType(url))
+                        .mediaType(typeOf(substringType(url)))
                         .modifiedAt(LocalDateTime.now())
                         .createdAt(LocalDateTime.now())
                         .build()
@@ -51,6 +52,14 @@ public class FeedCreateRequestDto {
                 .createdAt(LocalDateTime.now())
                 .build();
         return feed;
+    }
+
+    private static String typeOf(String urlExtension) {
+        return switch (urlExtension.toLowerCase()) {
+            case "png", "jpg" -> "img";
+            case "mp4" -> "video";
+            default -> throw new IllegalArgumentException("확장자가 잘못됐습니다");
+        };
     }
 
     private String substringType(String url) {
