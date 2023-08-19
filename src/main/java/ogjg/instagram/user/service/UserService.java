@@ -62,6 +62,7 @@ public class UserService {
                 .userName(signupRequestDto.getUsername())
                 .nickname(signupRequestDto.getNickname())
                 .password(passwordEncoder.encode(signupRequestDto.getPassword()))
+                .userImg("https://pbl-insta-image.s3.ap-northeast-2.amazonaws.com/images/default_img.png")
                 .build();
         userRepository.save(user);
         return new ResponseEntity<>("가입 성공", HttpStatus.OK);
