@@ -24,8 +24,8 @@ public class FeedMediaService {
             log.info("FeedMedia={}", feedMedia);
         }
 
-        feedMedias.stream()
-                .forEach((feedMedia -> feedMedia.setFeed(feed)));
+//        feedMedias.stream()
+//                .forEach((feedMedia -> feedMedia.setFeed(feed)));
 
         feedMediaRepository.saveAll(feedMedias);
     }
