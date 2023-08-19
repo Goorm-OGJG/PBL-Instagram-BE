@@ -6,14 +6,17 @@ import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.util.Enumeration;
 import java.util.List;
 
+@Slf4j
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
@@ -41,6 +44,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             response.setCharacterEncoding("UTF-8");
             response.setContentType("application/json");
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+            log.info("jwt errorMessage ={}", e.getMessage());
             return;
         }
 
@@ -49,6 +53,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     private String getJwt(HttpServletRequest request) {
         String jwt = request.getHeader("Authorization");
+        log.info("request = {}", request);
+        log.info("origin jwt Authorization Header = {}", jwt);
+
+        Enumeration<String> headerNames = request.getHeaderNames();
+        while (headerNames.hasMoreElements()) {
+            String headerName = headerNames.nextElement();
+            String headerValue = request.getHeader(headerName);
+            log.info("headerName={} : headerValue={}", headerName,headerValue);
+        }
 
         if (jwt != null && jwt.startsWith(PREFIX)) {
             return jwt.substring(PREFIX.length());
