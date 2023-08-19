@@ -23,7 +23,7 @@ public class FeedController {
      */
     @GetMapping("")
     public ResponseEntity<?> feedList(
-            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.ASC) Pageable pageable,
+            @PageableDefault(page = 0, size = 10, sort = "createdAt", direction = Sort.Direction.DESC) Pageable pageable,
             @AuthenticationPrincipal JwtUserDetails userDetails
             ) {
         Long loginId = userDetails.getUserId();
