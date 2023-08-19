@@ -38,6 +38,7 @@ public class FeedService {
 
     private final FeedLikeService feedLikeService;
     private final FeedRepository feedRepository;
+    private final FeedMediaService feedMediaService;
     private final ProfileService profileService;
     private final ProfileRepository profileRepository;
     private final FollowService followService;
@@ -75,8 +76,11 @@ public class FeedService {
         log.info("requestDto={}",requestDto);
 
         Feed collectedFeed = feedRepository.save(requestDto.toFeed(user));
+
         log.info("feedId ={}", collectedFeed.getId());
         log.info("feedContent ={}", collectedFeed.getContent());
+
+        feedMediaService.saveAll(collectedFeed);
 
         return hashtagFeedService.saveAllHashtags(collectedFeed, hashtags);
     }
@@ -109,6 +113,8 @@ public class FeedService {
     @Transactional(readOnly = true)
     public FeedListResponseDto findFeedList(Long userId, Pageable pageable) {
         List<Long> followedIds = followService.getFollowedIds(userId);
+//        followedIds.add(userId);
+
         Page<Feed> feedPages = findFeedsIn(followedIds, pageable);
 
         return FeedListResponseDto.from(
