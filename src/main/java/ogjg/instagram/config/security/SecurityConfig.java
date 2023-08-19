@@ -65,12 +65,27 @@ public class SecurityConfig {
     }
 
 
+   /* @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+        configuration.addAllowedHeader("*");
+        configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
+//        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://goorm-ogjg.github.io"));
+        configuration.addAllowedOriginPattern("http://localhost:5173");
+        configuration.setAllowCredentials(true);
+        configuration.addExposedHeader("Authorization");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }*/
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
         configuration.addAllowedHeader("*");
         configuration.setAllowedMethods(Arrays.asList("GET", "POST", "PUT", "DELETE"));
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173"));
+        configuration.setAllowedOrigins(Arrays.asList("http://localhost:5173", "https://goorm-ogjg.github.io"));
         configuration.setAllowCredentials(true);
         configuration.addExposedHeader("Authorization");
 
@@ -79,6 +94,8 @@ public class SecurityConfig {
 
         return source;
     }
+
+
 
     @Bean
     public PasswordEncoder passwordEncoder() {

@@ -1,7 +1,6 @@
 package ogjg.instagram.config.security.login;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
@@ -11,6 +10,7 @@ import ogjg.instagram.user.dto.JwtUserClaimsDto;
 import ogjg.instagram.user.dto.LoginResponseDto;
 import ogjg.instagram.user.repository.UserAuthenticationRepository;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseCookie;
 import org.springframework.security.core.Authentication;
 
 import java.io.IOException;
@@ -47,7 +47,8 @@ public class LoginAuthSuccessHandler {
 
         response.addHeader(AUTH_HEADER, TOKEN_TYPE + accessToken);
         response.setContentType(MediaType.APPLICATION_JSON_VALUE);
-        response.addCookie(getRefreshTokenCookie(refreshToken));
+        response.setHeader("Set-Cookie", getRefreshTokenCookie(refreshToken).toString());
+//        response.addCookie(getRefreshTokenCookie(refreshToken));
         response.setCharacterEncoding("UTF-8");
 
         LoginResponseDto loginResponseDto = LoginResponseDto.builder()
@@ -59,10 +60,27 @@ public class LoginAuthSuccessHandler {
         objectMapper.writeValue(response.getWriter(), loginResponseDto);
     }
 
-    private Cookie getRefreshTokenCookie(String refreshToken) {
-        Cookie cookie = new Cookie(REFRESH_TOKEN, refreshToken);
-        cookie.setHttpOnly(true);
-        cookie.setMaxAge(EXPIRATION);
+//    private Cookie getRefreshTokenCookie(String refreshToken) {
+//        Cookie cookie = new Cookie(REFRESH_TOKEN, refreshToken);
+//        cookie.setHttpOnly(true);
+//        cookie.setPath("/");
+//        cookie.setMaxAge(EXPIRATION);
+//
+//        // --
+//        cookie.setDomain("localhost");
+////        cookie.setSecure(true);
+//        // --
+//        return cookie;
+//    }
+
+    private ResponseCookie getRefreshTokenCookie(String refreshToken) {
+        ResponseCookie cookie = ResponseCookie.from(REFRESH_TOKEN, refreshToken)
+                .maxAge(EXPIRATION)
+                .path("/")
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .build();
         return cookie;
     }
 

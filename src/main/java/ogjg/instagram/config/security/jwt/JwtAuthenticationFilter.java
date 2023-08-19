@@ -54,14 +54,17 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     private String getJwt(HttpServletRequest request) {
         String jwt = request.getHeader("Authorization");
         log.info("request = {}", request);
+
         log.info("origin jwt Authorization Header = {}", jwt);
 
+        log.info("-------------headers start---------------");
         Enumeration<String> headerNames = request.getHeaderNames();
         while (headerNames.hasMoreElements()) {
             String headerName = headerNames.nextElement();
             String headerValue = request.getHeader(headerName);
             log.info("headerName={} : headerValue={}", headerName,headerValue);
         }
+        log.info("--------------headers end---------------");
 
         if (jwt != null && jwt.startsWith(PREFIX)) {
             return jwt.substring(PREFIX.length());
