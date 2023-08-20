@@ -25,7 +25,7 @@ public class ProfileService {
     }
     @Transactional
     public boolean isCollected(Long feedId, Long userId) {
-        return collectionFeedRepository.findByFeedId(feedId, userId).isPresent();
+        return collectionFeedRepository.findByKeys(feedId, userId).isPresent();
     }
 
     ///todo : Map 조회 단순화
