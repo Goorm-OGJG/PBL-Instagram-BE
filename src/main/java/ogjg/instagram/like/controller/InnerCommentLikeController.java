@@ -8,7 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 @RequiredArgsConstructor
 @RestController
-@RequestMapping("/api/innerComment")
+@RequestMapping("/api/inner-comment")
 public class InnerCommentLikeController {
 
     private final InnerCommentLikeService innerCommentLikeService;
