@@ -101,7 +101,8 @@ public class FeedService {
 
         // todo : cascade는 쿼리문이 여러개 나간다.
         Feed feed = findById(feedId);
-        feed.clearAll();
+//        feed.clearAll();
+        feedRepository.delete(feed);
 //        feedRepository.deleteById(feedId);
     }
 
