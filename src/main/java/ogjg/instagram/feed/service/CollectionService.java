@@ -19,26 +19,34 @@ public class CollectionService {
     private final FeedService feedService;
     private final UserService userService;
 
+    /**
+     * 1) 컬렉션-피드 테이블에 값을 추가한다.
+     * 2) 컬렉션 테이블에 default 네임인 1을 가지는 데이터를 추가한다.
+     * --> 후에 컬렉션-피드 테이블을 통해 컬렉션 추가 여부를 확인한다.
+     */
     @Transactional
-    public void collectFeed(Long feedId, Long collectionId, Long userId) {
+    public void collectFeed(Long feedId, String collectionName, Long userId) {
         Feed findFeed = feedService.findById(feedId);
         User findUser = userService.findById(userId);
-        Collection findCollection = findById(collectionId);
+        Collection collection = findByUserId(userId, findUser, collectionName);
 
-        collectionFeedRepository.save(CollectionFeed.of(findFeed, findCollection, findUser));
+        collectionFeedRepository.save(CollectionFeed.of(findFeed, collection, findUser));
+    }
+
+    /**
+     * Collection을 생성한 적 있다면 Collection을 가져온다.
+     * 생성한 적 없다면 default name으로 생성해서 반환한다.
+     */
+    private Collection findByUserId(Long userId, User findUser, String collectionName) {
+        return collectionRepository.findByUserId(userId)
+                .orElse(Collection.of(findUser, collectionName));
     }
 
     @Transactional
-    public void deleteFeed(Long feedId, Long collectionId,Long userId) {
-        collectionFeedRepository.findById(feedId, collectionId, userId)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 컬렉션입니다. id=" + collectionId));
+    public void deleteFeed(Long feedId, String collectionName, Long userId) {
+        collectionFeedRepository.findById(feedId, collectionName, userId)
+                .orElseThrow(() -> new IllegalArgumentException("저장되지 않은 피드입니다. feed id=" + feedId));
 
-        collectionFeedRepository.deleteBy(feedId, collectionId,userId);
-    }
-
-    @Transactional(readOnly = true)
-    public Collection findById(Long id) {
-        return collectionRepository.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 컬렉션입니다. id ="+id));
+        collectionFeedRepository.deleteBy(feedId, collectionName, userId);
     }
 }
