@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/api/collections", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CollectionController {
 
-    public static final String FIXED_COLLECTION_NAME = "!";
+    public static final String FIXED_COLLECTION_NAME = "1";
     private final CollectionService collectionService;
 
     /**
