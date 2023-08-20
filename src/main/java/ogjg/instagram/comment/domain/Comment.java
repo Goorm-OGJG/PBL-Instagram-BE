@@ -58,6 +58,7 @@ public class Comment {
                 .user(user)
                 .feed(feed)
                 .content(content)
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 }
