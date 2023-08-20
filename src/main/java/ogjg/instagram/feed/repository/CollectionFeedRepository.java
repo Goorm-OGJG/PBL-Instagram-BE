@@ -25,16 +25,16 @@ public interface CollectionFeedRepository extends JpaRepository<CollectionFeed, 
         delete from CollectionFeed cf
         where cf.feed.id = :feedId
         and cf.user.id = :userId
-        and cf.collection.id = :collectionId
+        and cf.collection.collectionName = :collectionName
     """)
-    void deleteBy(@Param("feedId") Long feedId, @Param("collectionId") Long collectionId, @Param("userId") Long userId);
+    void deleteBy(@Param("feedId") Long feedId, @Param("collectionName") String collectionName, @Param("userId") Long userId);
 
     @Query("""
         select cf from CollectionFeed cf
         where cf.feed.id = :feedId
         and cf.user.id = :userId
-        and cf.collection.id = :collectionId
+        and cf.collection.collectionName = :collectionName
     """)
-    Optional<CollectionFeed> findById(@Param("feedId") Long feedId, @Param("collectionId") Long collectionId, @Param("userId") Long userId);
+    Optional<CollectionFeed> findById(@Param("feedId") Long feedId, @Param("collectionName") String collectionName, @Param("userId") Long userId);
 }
 
