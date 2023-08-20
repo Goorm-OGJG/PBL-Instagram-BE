@@ -38,22 +38,19 @@ public class FollowController {
         return ResponseEntity.ok().build();
     }
 
-    @GetMapping("/following")
+    @GetMapping("/following/{userId}")
     public ResponseEntity<List<FollowResponse>> following(
-            @AuthenticationPrincipal JwtUserDetails userDetails
+            @PathVariable("userId") Long userId
     ){
-        List<FollowResponse> followList = followService.FollowingList(userDetails.getUserId());
+        List<FollowResponse> followList = followService.FollowingList(userId);
         return new ResponseEntity<>(followList,HttpStatus.OK);
     }
 
-    @GetMapping("/follower")
+    @GetMapping("/follower/{userId}")
     public ResponseEntity<List<FollowedResponse>> follower(
-            @AuthenticationPrincipal JwtUserDetails userDetails
+            @PathVariable("userId") Long userId
     ){
-        List<FollowedResponse> followedResponses = followService.followedList(userDetails.getUserId());
+        List<FollowedResponse> followedResponses = followService.followedList(userId);
         return new ResponseEntity<>(followedResponses,HttpStatus.OK);
     }
-
-
-
 }
