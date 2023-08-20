@@ -16,7 +16,7 @@ public class ProfileResponseDto {
     private long followingCount;
     private long feedCount;
     private boolean followingStatus;
-    private boolean secretStatus;
+    private boolean isSecret;
 
     public static ProfileResponseDto from(User user, Long feedCount, Long followCount, Long followingCount, boolean followingStatus) {
         return ProfileResponseDto.builder()
@@ -28,7 +28,7 @@ public class ProfileResponseDto {
                 .followingCount(followingCount)
                 .feedCount(feedCount)
                 .followingStatus(followingStatus)
-                .secretStatus(user.isSecret())
+                .isSecret(user.isSecret())
                 .build();
     }
 }
