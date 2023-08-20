@@ -72,12 +72,4 @@ public class Feed {
     public void addAllMedias(List<FeedMedia> medias) {
         this.feedMedias = medias;
     }
-
-    public void clearAll() {
-        feedLikes.clear();
-        collectionFeeds.clear();
-        hashtagFeeds.clear();
-        feedMedias.clear();
-        comments.clear();
-    }
 }
