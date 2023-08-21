@@ -50,7 +50,7 @@ jobs:
                   "Ports": [
                       {
                         "ContainerPort": "80",
-                        "HostPort": "8080"
+                        "HostPort": "80"
                       }
                   ],
                   "Image": {
