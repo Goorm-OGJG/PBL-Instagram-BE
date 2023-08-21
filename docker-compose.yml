@@ -4,5 +4,5 @@ services:
     build: .
     image: ${IMAGE_NAME}
     ports:
-      - "80:80"
+      - "8080:8080"
     container_name: "ogjg-backend"
