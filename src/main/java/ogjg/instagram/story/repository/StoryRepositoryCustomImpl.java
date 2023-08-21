@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import ogjg.instagram.story.dto.response.QStoryListDto;
 import ogjg.instagram.story.dto.response.StoryListDto;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 import static ogjg.instagram.story.domain.QStory.story;
@@ -28,6 +29,8 @@ public class StoryRepositoryCustomImpl implements StoryRepositoryCustom{
                 )).from(story)
                 .join(user)
                 .on(story.user.id.eq(user.id))
+                .where(story.createdAt.between(LocalDateTime.now().minusHours(24),LocalDateTime.now()))
+                .orderBy(story.createdAt.desc())
                 .fetch();
 
         JPAQuery<Long> storyCount = jpaQueryFactory.select(story
