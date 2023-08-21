@@ -49,8 +49,8 @@ jobs:
                   "AWSEBDockerrunVersion": "1",
                   "Ports": [
                       {
-                        "ContainerPort": "5000",
-                        "HostPort": "5000"
+                        "ContainerPort": "80",
+                        "HostPort": "8080"
                       }
                   ],
                   "Image": {
