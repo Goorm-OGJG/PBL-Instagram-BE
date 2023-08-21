@@ -3,6 +3,7 @@ package ogjg.instagram.feed.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ogjg.instagram.comment.domain.Comment;
+import ogjg.instagram.comment.repository.CommentRepository;
 import ogjg.instagram.feed.domain.Feed;
 import ogjg.instagram.feed.dto.request.FeedCreateRequestDto;
 import ogjg.instagram.feed.dto.response.FeedDetailResponseDto;
@@ -45,6 +46,7 @@ public class FeedService {
     private final HashtagFeedService hashtagFeedService;
     private final HashtagService hashtagService;
     private final UserService userService;
+    private final CommentRepository commentRepository;
     private final CommentLikeService commentLikeService;
     private final InnerCommentLikeService innerCommentLikeService;
 
@@ -135,6 +137,7 @@ public class FeedService {
                 .likeCount(feedLikeService.feedLikeCount(feedId))
                 .likeStatus(feedLikeService.isFeedLiked(feedId, userId))
                 .collectionStatus(profileService.isCollected(feedId, userId))
+                .commentCount(commentRepository.countByFeedId(feedId))
                 .feedMedias(feed.getFeedMedias().stream().map((FeedMediaResponseDto::new)).toList())
                 .build();
     }
