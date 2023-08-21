@@ -41,7 +41,7 @@ jobs:
         id: extract_version
         run: |
           VERSION=$(echo ./build/libs/instagram-0.0.1-SNAPSHOT.jar | sed -r 's/.*instagram-([0-9.]+)-SNAPSHOT\.jar/\1/')
-          echo "DOCKER_TAG=${{ secrets.DOCKER_HUB_USERNAME }}/ogjg-instagram:$VERSION" >> $GITHUB_ENV
+          echo "IMAGE_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/ogjg-instagram:$VERSION" >> $GITHUB_ENV
 
       - name: Create Dockerrun.aws.json
         run: |
@@ -54,7 +54,7 @@ jobs:
                       }
                   ],
                   "Image": {
-                    "Name": "${{ env.DOCKER_TAG }}",
+                    "Name": "${{ env.IMAGE_NAME }}",
                     "Update": "true"
                   }
                 }' > Dockerrun.aws.json
@@ -62,12 +62,11 @@ jobs:
       - name: Zip the Dockerrun file
         run: zip deployment.zip Dockerrun.aws.json
 
-      - name: Build and push
-        uses: docker/build-push-action@v4
-        with:
-          context: .
-          push: true
-          tags: ${{ env.DOCKER_TAG }}
+      - name: Build services in docker-compose.yml
+        run: docker-compose build
+
+      - name: Push to Docker Hub
+        run: docker push ${{ env.IMAGE_NAME }}
 
       - name: Configure AWS Credentials
         uses: aws-actions/configure-aws-credentials@v2
@@ -81,8 +80,8 @@ jobs:
         with:
           aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
           aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          application_name: OGJG
-          environment_name: OGJG-env
+          application_name: OGJG-PBL
+          environment_name: OGJG-PBL-env
           version_label: OGJG_Deploy-${{ github.SHA }}
           region: ${{ secrets.AWS_REGION }}
           deployment_package: deployment.zip
