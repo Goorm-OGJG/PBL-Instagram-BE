@@ -46,11 +46,11 @@ jobs:
       - name: Create Dockerrun.aws.json
         run: |
           echo '{
-                  "AWSEBDockerrunVersion": "2",
+                  "AWSEBDockerrunVersion": "1",
                   "Ports": [
                       {
-                        "ContainerPort": "80",
-                        "HostPort": "80"
+                        "ContainerPort": "8080",
+                        "HostPort": "8080"
                       }
                   ],
                   "Image": {

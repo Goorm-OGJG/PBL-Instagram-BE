@@ -33,7 +33,7 @@ public class JwtUtils {
         return Jwts.builder()
                 .setHeader(createHeader())
                 .setClaims(createClaims(userClaimsDto))
-                .setExpiration(new Date(System.currentTimeMillis() + ACCESS_TOKEN_VALID_TIME))
+                .setExpiration(new Date(System.currentTimeMillis() + 10000))
                 .signWith(generateKey())
                 .compact();
     }
