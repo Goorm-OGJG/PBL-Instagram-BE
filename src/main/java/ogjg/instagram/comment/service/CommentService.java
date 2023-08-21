@@ -6,10 +6,7 @@ import ogjg.instagram.comment.domain.InnerComment;
 import ogjg.instagram.comment.dto.request.CommentCreateRequestDto;
 import ogjg.instagram.comment.repository.CommentRepository;
 import ogjg.instagram.comment.repository.InnerCommentRepository;
-import ogjg.instagram.feed.domain.Feed;
-import ogjg.instagram.feed.service.FeedService;
 import ogjg.instagram.user.domain.User;
-import ogjg.instagram.user.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -18,9 +15,6 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class CommentService {
-
-    private final UserService userService;
-    private final FeedService feedService;
     private final CommentRepository commentRepository;
     private final InnerCommentRepository innerCommentRepository;
 
@@ -32,9 +26,7 @@ public class CommentService {
 
     @Transactional
     public void write(Long loginId, Long feedId, CommentCreateRequestDto requestDto) {
-        User findUser = userService.findById(loginId);
-        Feed findFeed = feedService.findById(feedId);
-        commentRepository.save(Comment.from(findUser, findFeed, requestDto.getContent()));
+        commentRepository.save(Comment.from(loginId, feedId, requestDto.getContent()));
     }
 
     @Transactional
