@@ -1,6 +1,7 @@
 package ogjg.instagram.comment.service;
 
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import ogjg.instagram.comment.domain.Comment;
 import ogjg.instagram.comment.domain.InnerComment;
 import ogjg.instagram.comment.dto.request.CommentCreateRequestDto;
@@ -12,13 +13,14 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
+@Slf4j
 @Service
 @RequiredArgsConstructor
 public class CommentService {
     private final CommentRepository commentRepository;
     private final InnerCommentRepository innerCommentRepository;
 
-    @Transactional
+    @Transactional(readOnly = true)
     public List<InnerComment> findInnerComments(Long commentId) {
         commentRepository.findById(commentId).orElseThrow(() -> new IllegalArgumentException("답글을 달기 위한 댓글이 존재하지 않습니다. id = " + commentId));
         return innerCommentRepository.findAllById(commentId);
@@ -41,14 +43,25 @@ public class CommentService {
         return findUser.getId() != userId;
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Comment findById(Long commentId) {
         return commentRepository.findById(commentId)
                 .orElseThrow(() -> new IllegalArgumentException("일치하는 댓글이 존재하지 않습니다. id=" + commentId));
     }
 
-    @Transactional
+    @Transactional(readOnly = true)
     public Long countByFeedId(Long feedId) {
         return commentRepository.countByFeedId(feedId);
+    }
+
+    @Transactional(readOnly = true)
+    public Long countTotalComment(Long feedId) {
+        List<Long> includeIds = commentRepository.findIncludeIds(feedId);
+        Long commentCount = countByFeedId(feedId);
+        Long innerCommentCount = commentRepository.countByCommentIds(includeIds);
+
+        log.info("commentCount ={}", commentCount);
+        log.info("innerCommentCount ={}", innerCommentCount);
+        return commentCount + innerCommentCount;
     }
 }
