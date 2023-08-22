@@ -43,26 +43,8 @@ jobs:
           VERSION=$(echo ./build/libs/instagram-0.0.1-SNAPSHOT.jar | sed -r 's/.*instagram-([0-9.]+)-SNAPSHOT\.jar/\1/')
           echo "IMAGE_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/ogjg-instagram:$VERSION" >> $GITHUB_ENV
 
-      - name: Create Dockerrun.aws.json
-        run: |
-            echo '{
-                    "AWSEBDockerrunVersion": "2",
-                    "containerDefinitions": [
-                        {
-                          "name": "spring-boot",
-                          "image": "${{ env.IMAGE_NAME }}",
-                          "portMappings": [
-                            {
-                              "hostPort": 8080,
-                              "containerPort": 8080
-                            }
-                          ]
-                        }
-                      ]
-                    }' > Dockerrun.aws.json
-
-      - name: Zip the Dockerrun file
-        run: zip deployment.zip Dockerrun.aws.json
+      - name: Zip the docker-compose file
+        run: zip deployment.zip docker-compose.yml
 
       - name: Build services in docker-compose.yml
         run: docker-compose build
