@@ -5,10 +5,12 @@ import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
+import ogjg.instagram.config.security.jwt.JwtUserDetails;
 import ogjg.instagram.user.dto.SignupRequestDto;
 import ogjg.instagram.user.service.UserService;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -47,4 +49,9 @@ public class UserController {
         }
     }
 
+    @GetMapping("/logout")
+    public ResponseEntity<?> logout(@AuthenticationPrincipal JwtUserDetails userDetails) {
+        userService.logout(userDetails.getUsername());
+        return new ResponseEntity<>("로그아웃 되었습니다.", HttpStatus.OK);
+    }
 }
