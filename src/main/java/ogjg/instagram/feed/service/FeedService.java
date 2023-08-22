@@ -49,9 +49,10 @@ public class FeedService {
 
 
     @Transactional(readOnly = true)
-    public ProfileFeedResponseDto findProfileFeedsByUserId(Long userId, Pageable pageable) {
-        userService.findById(userId);
-        return ProfileFeedResponseDto.from(profileRepository.findMyFeedsByUserId(userId, pageable));
+    public ProfileFeedResponseDto findProfileFeedsByUserId(String nickname, Pageable pageable) {
+        User user = profileRepository.findByNickname(nickname)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다. nickname=" + nickname));
+        return ProfileFeedResponseDto.from(profileRepository.findMyFeedsByUserId(user.getId(), pageable));
     }
 
     @Transactional(readOnly = true)

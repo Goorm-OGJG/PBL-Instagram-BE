@@ -84,15 +84,15 @@ public class FollowService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isFollowing(Long userId, Long jwt_myId) {
-        return followRepository.followerMeToo(userId, jwt_myId) == null;
+
+    public boolean isFollowing(Long loginId, Long userId) {
+        return followRepository.followerMeToo(loginId, userId) != null;
     }
 
     @Transactional(readOnly = true)
     public List<Long> getFollowedIds(Long id) {
         return followedList(id).stream()
-                .map((FollowedResponse::getFollowId))
+                .map((FollowedResponse::getUserId))
                 .toList();
     }
-
 }
