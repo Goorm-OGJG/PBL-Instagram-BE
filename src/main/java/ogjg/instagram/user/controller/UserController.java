@@ -38,4 +38,13 @@ public class UserController {
         }
     }
 
+    @GetMapping("/{nickname}")
+    public ResponseEntity<?> checkNickname(@PathVariable String nickname) {
+        if (userService.isNicknameAlreadyInUse(nickname)) {
+            return new ResponseEntity<>("이미 사용되고 있는 닉네임입니다.", HttpStatus.BAD_REQUEST);
+        } else {
+            return new ResponseEntity<>("사용 가능한 닉네임입니다.", HttpStatus.OK);
+        }
+    }
+
 }

@@ -84,6 +84,14 @@ public class UserService {
         }
     }
 
+    public boolean isEmailAlreadyInUse(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    public boolean isNicknameAlreadyInUse(String nickname) {
+        return userRepository.findByNickname(nickname).isPresent();
+    }
+
     private static String getAccessToken(UserAuthentication userAuth) {
         JwtUserClaimsDto userClaimsDto = JwtUserClaimsDto.builder()
                 .userId(userAuth.getUserId())
@@ -109,7 +117,4 @@ public class UserService {
                 .orElseThrow(() -> new RuntimeException("쿠키에 Refresh Token이 존재하지 않습니다."));
     }
 
-    public boolean isEmailAlreadyInUse(String email) {
-        return userRepository.findByEmail(email).isPresent();
-    }
 }
