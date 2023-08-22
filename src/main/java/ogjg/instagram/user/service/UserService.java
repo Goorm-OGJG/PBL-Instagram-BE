@@ -108,4 +108,8 @@ public class UserService {
                 .map(Cookie::getValue)
                 .orElseThrow(() -> new RuntimeException("쿠키에 Refresh Token이 존재하지 않습니다."));
     }
+
+    public boolean isEmailAlreadyInUse(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
 }
