@@ -25,8 +25,6 @@ ENV PATH=$PATH:/usr/lib/jvm/default-jvm/bin
 COPY build/libs/*.jar /app/
 COPY start.sh /app/start.sh
 
-EXPOSE 8080
-
 RUN chmod +x /app/start.sh
 
 ENTRYPOINT ["/app/start.sh"]

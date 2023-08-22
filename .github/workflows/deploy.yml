@@ -45,19 +45,21 @@ jobs:
 
       - name: Create Dockerrun.aws.json
         run: |
-          echo '{
-                  "AWSEBDockerrunVersion": "1",
-                  "Ports": [
-                      {
-                        "ContainerPort": "8080",
-                        "HostPort": "8080"
-                      }
-                  ],
-                  "Image": {
-                    "Name": "${{ env.IMAGE_NAME }}",
-                    "Update": "true"
-                  }
-                }' > Dockerrun.aws.json
+            echo '{
+                    "AWSEBDockerrunVersion": "2",
+                    "containerDefinitions": [
+                        {
+                          "name": "spring-boot",
+                          "image": "${{ env.IMAGE_NAME }}",
+                          "portMappings": [
+                            {
+                              "hostPort": 8080,
+                              "containerPort": 8080
+                            }
+                          ]
+                        }
+                      ]
+                    }' > Dockerrun.aws.json
 
       - name: Zip the Dockerrun file
         run: zip deployment.zip Dockerrun.aws.json
