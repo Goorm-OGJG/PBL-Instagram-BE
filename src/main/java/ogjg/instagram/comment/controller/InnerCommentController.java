@@ -27,7 +27,6 @@ public class InnerCommentController {
     ) {
         Long loginId = userDetails.getUserId();
 
-
         innerCommentService.write(loginId, commentId, requestDto);
         return ResponseEntity.ok().build();
     }

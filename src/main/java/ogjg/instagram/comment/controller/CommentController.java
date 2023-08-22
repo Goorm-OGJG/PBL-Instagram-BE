@@ -2,8 +2,8 @@ package ogjg.instagram.comment.controller;
 
 import lombok.RequiredArgsConstructor;
 import ogjg.instagram.comment.dto.request.CommentCreateRequestDto;
-import ogjg.instagram.comment.dto.response.InnerCommentListResponseDto;
 import ogjg.instagram.comment.service.CommentService;
+import ogjg.instagram.comment.service.InnerCommentService;
 import ogjg.instagram.config.security.jwt.JwtUserDetails;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -16,19 +16,20 @@ import org.springframework.web.bind.annotation.*;
 public class CommentController {
 
     private final CommentService commentService;
+    private final InnerCommentService innerCommentService;
 
     /**
      * 피드 대댓글 보기 - 전부 내려주기
      */
     @GetMapping("/comments/{commentId}/inner-comments")
     public ResponseEntity<?> innerCommentList(
-            @PathVariable ("commentId") Long commentId
+            @PathVariable ("commentId") Long commentId,
+            @AuthenticationPrincipal JwtUserDetails userDetails
     ) {
+        Long loginId = userDetails.getUserId();
         return ResponseEntity.ok(
-                InnerCommentListResponseDto.from(
-                        commentId,
-                        commentService.findInnerComments(commentId)
-                ));
+                innerCommentService.innerCommentList(commentId, loginId)
+        );
     }
 
     /**

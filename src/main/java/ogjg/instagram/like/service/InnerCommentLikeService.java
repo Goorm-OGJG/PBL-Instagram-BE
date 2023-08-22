@@ -32,6 +32,7 @@ public class InnerCommentLikeService {
         innerCommentLikeRepository.deleteInnerCommentLike(innerCommentId, userId);
     }
 
+    @Transactional(readOnly = true)
     public Long innerCommentLikeCount(Long innerCommentId){
         return innerCommentLikeRepository.countLikes(innerCommentId);
     }
@@ -46,7 +47,13 @@ public class InnerCommentLikeService {
                 .orElseThrow(() -> new IllegalArgumentException(innerCommentId + ": 대댓글를 찾을 수 없습니다"));
     }
 
+    @Transactional(readOnly = true)
     public Long countInnerComment(Long commentId) {
         return innerCommentRepository.countByCommentId(commentId);
+    }
+
+    @Transactional(readOnly = true)
+    public boolean likeStatus(Long userId, Long innerCommentId) {
+        return innerCommentLikeRepository.likeStatus(userId, innerCommentId).isPresent();
     }
 }
