@@ -163,10 +163,11 @@ public class FeedService {
     //todo : 로직을 한번에 처리하는 방법?
     private FeedDetailResponseDto.CommentThumbnailDto toCommentThumbnailResponseDto(Comment comment, Long userId) {
         Long commentId = comment.getId();
+        Long commentUserId = comment.getUser().getId();
 
         return new FeedDetailResponseDto.CommentThumbnailDto(
                 comment,
-                userService.findById(userId),
+                userService.findById(commentUserId),
                 commentLikeService.commentLikeCount(commentId),
                 commentLikeService.isCommentLiked(commentId, userId),
                 innerCommentLikeService.countInnerComment(commentId));
