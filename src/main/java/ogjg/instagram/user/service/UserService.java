@@ -84,10 +84,12 @@ public class UserService {
         }
     }
 
+    @Transactional
     public boolean isEmailAlreadyInUse(String email) {
         return userRepository.findByEmail(email).isPresent();
     }
 
+    @Transactional
     public boolean isNicknameAlreadyInUse(String nickname) {
         return userRepository.findByNickname(nickname).isPresent();
     }
