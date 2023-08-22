@@ -19,6 +19,7 @@ import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.access.channel.ChannelProcessingFilter;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -50,6 +51,7 @@ public class SecurityConfig {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(withDefaults())
+                .addFilterBefore(globalFilterExceptionHandler(), ChannelProcessingFilter.class)
                 .addFilterBefore(jwtAuthenticationFilter(), UsernamePasswordAuthenticationFilter.class)
                 .addFilterBefore(loginAuthenticationFilter(), JwtAuthenticationFilter.class)
                 .authorizeHttpRequests(authorize -> authorize
@@ -120,4 +122,7 @@ public class SecurityConfig {
     public JwtAuthenticationProvider jwtAuthenticationProvider() {
         return new JwtAuthenticationProvider();
     }
+
+    @Bean
+    public CustomGlobalFilterExceptionHandler globalFilterExceptionHandler() {return new CustomGlobalFilterExceptionHandler();}
 }
