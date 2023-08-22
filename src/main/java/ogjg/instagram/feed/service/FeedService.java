@@ -3,7 +3,7 @@ package ogjg.instagram.feed.service;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import ogjg.instagram.comment.domain.Comment;
-import ogjg.instagram.comment.repository.CommentRepository;
+import ogjg.instagram.comment.service.CommentService;
 import ogjg.instagram.feed.domain.Feed;
 import ogjg.instagram.feed.dto.request.FeedCreateRequestDto;
 import ogjg.instagram.feed.dto.response.FeedDetailResponseDto;
@@ -28,6 +28,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import static java.util.stream.Collectors.toUnmodifiableList;
@@ -46,7 +47,7 @@ public class FeedService {
     private final HashtagFeedService hashtagFeedService;
     private final HashtagService hashtagService;
     private final UserService userService;
-    private final CommentRepository commentRepository;
+    private final CommentService commentService;
     private final CommentLikeService commentLikeService;
     private final InnerCommentLikeService innerCommentLikeService;
 
@@ -113,14 +114,15 @@ public class FeedService {
 
     @Transactional(readOnly = true)
     public FeedListResponseDto findFeedList(Long userId, Pageable pageable) {
-        List<Long> followedIds = followService.getFollowedIds(userId);
-//        followedIds.add(userId);
+        // 자신의 게시물도 보이도록 추가하기 위해 가변 리스트로 변형
+        List<Long> followedIds = new ArrayList<>(followService.getFollowedIds(userId));
+        followedIds.add(userId);
 
         Page<Feed> feedPages = findFeedsIn(followedIds, pageable);
 
         return FeedListResponseDto.from(
                 feedPages.getContent().stream()
-                        .map((feed) -> toFeedListDto(feed, feed.getUser().getId()))
+                        .map((feed) -> toFeedListDto(feed, userId))
                         .collect(toUnmodifiableList()),
                 feedPages.isLast()
         );
@@ -135,7 +137,7 @@ public class FeedService {
                 .likeCount(feedLikeService.feedLikeCount(feedId))
                 .likeStatus(feedLikeService.isFeedLiked(feedId, userId))
                 .collectionStatus(profileService.isCollected(feedId, userId))
-                .commentCount(commentRepository.countByFeedId(feedId))
+                .commentCount(commentService.countTotalComment(feedId))
                 .feedMedias(feed.getFeedMedias().stream().map((FeedMediaResponseDto::new)).toList())
                 .build();
     }

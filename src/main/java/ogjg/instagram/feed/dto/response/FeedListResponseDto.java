@@ -39,9 +39,7 @@ public class FeedListResponseDto {
         private Long likeCount;
         private boolean likeStatus;
         private boolean collectionStatus;
-
         private Long commentCount;
-
         private List<FeedMediaResponseDto> feedMedias;
 
         @Builder
