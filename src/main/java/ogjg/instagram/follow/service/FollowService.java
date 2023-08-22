@@ -12,7 +12,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -85,8 +84,9 @@ public class FollowService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isFollowing(Long userId, Long jwt_myId) {
-        return followRepository.followerMeToo(userId, jwt_myId) == null;
+
+    public boolean isFollowing(Long loginId, Long userId) {
+        return followRepository.followerMeToo(loginId, userId) != null;
     }
 
     @Transactional(readOnly = true)

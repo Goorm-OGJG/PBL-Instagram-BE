@@ -42,13 +42,13 @@ public class SearchService {
     }
 
     @Transactional(readOnly = true)
-    public SearchNicknameResponseDto searchByNickname(boolean isUser, Long userId, String searchKey, Pageable pageable) {
+    public SearchNicknameResponseDto searchByNickname(boolean isUser, Long loginId, String searchKey, Pageable pageable) {
         return SearchNicknameResponseDto.from(
                 userRepository.findByNicknameContaining(wildCard(searchKey), pageable)
                         .getContent().stream()
                         .map((user) -> SearchNicknameResponseDto.SearchNicknameDto.of(
                                 user,
-                                followService.isFollowing(userId, user.getId())))
+                                followService.isFollowing(loginId, user.getId())))
                         .collect(Collectors.toUnmodifiableList()),
                 isUser);
     }
