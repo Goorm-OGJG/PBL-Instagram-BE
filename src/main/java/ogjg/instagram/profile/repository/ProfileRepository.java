@@ -8,6 +8,8 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
+import java.util.Optional;
+
 public interface ProfileRepository extends JpaRepository<User,Long> {
 
     /**
@@ -25,4 +27,6 @@ public interface ProfileRepository extends JpaRepository<User,Long> {
        WHERE f.user.id = :userId
     """)
     Page<ProfileFeedResponseDto.ProfileFeedDto> findMyFeedsByUserId(@Param("userId") Long jwt_userId, Pageable pageable);
+
+    Optional<User> findByNickname(String nickname);
 }

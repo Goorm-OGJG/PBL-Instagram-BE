@@ -30,15 +30,15 @@ public class ProfileController {
     /**
      * 프로필 가져오기
      */
-    @GetMapping("/{userId}")
+    @GetMapping("/{nickname}")
     public ResponseEntity<?> profile(
-            @PathVariable("userId") Long userId,
+            @PathVariable("nickname") String nickname,
             @AuthenticationPrincipal JwtUserDetails userDetails
     ) {
         Long loginId = userDetails.getUserId();
 
         return ResponseEntity.ok(
-                profileService.findProfile(userId, loginId));
+                profileService.findProfile(nickname, loginId));
     }
 
     /**
