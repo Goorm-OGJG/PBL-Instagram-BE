@@ -53,11 +53,12 @@ public class Comment {
         this.createdAt = createdAt;
     }
 
-    public static Comment from(User user, Feed feed, String content) {
+    public static Comment from(Long loginId, Long feedId, String content) {
         return Comment.builder()
-                .user(user)
-                .feed(feed)
+                .user(User.reference(loginId))
+                .feed(Feed.reference(feedId))
                 .content(content)
+                .createdAt(LocalDateTime.now())
                 .build();
     }
 }

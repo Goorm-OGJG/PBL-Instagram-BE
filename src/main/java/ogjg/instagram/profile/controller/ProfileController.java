@@ -30,31 +30,31 @@ public class ProfileController {
     /**
      * 프로필 가져오기
      */
-    @GetMapping("/{userId}")
+    @GetMapping("/{nickname}")
     public ResponseEntity<?> profile(
-            @PathVariable("userId") Long userId,
+            @PathVariable("nickname") String nickname,
             @AuthenticationPrincipal JwtUserDetails userDetails
     ) {
         Long loginId = userDetails.getUserId();
 
         return ResponseEntity.ok(
-                profileService.findProfile(userId, loginId));
+                profileService.findProfile(nickname, loginId));
     }
 
     /**
      * 내 피드 목록 가져오기 - 무한 스크롤 9개씩
      */
-    @GetMapping("/{userId}/feeds")
+    @GetMapping("/{nickname}/feeds")
     public ResponseEntity<?> myFeeds(
-            @PathVariable ("userId") Long userId,
-            @PageableDefault(page = 0, size = 9, sort = "id", direction = Sort.Direction.ASC)
+            @PathVariable ("nickname") String nickname,
+            @PageableDefault(page = 0, size = 9, sort = "id", direction = Sort.Direction.DESC)
             Pageable pageable,
             @AuthenticationPrincipal JwtUserDetails userDetails
     ) {
         Long loginId = userDetails.getUserId();
 
         return ResponseEntity.ok(
-                feedService.findProfileFeedsByUserId(userId, pageable));
+                feedService.findProfileFeedsByUserId(nickname, pageable));
     }
 
     /**
@@ -62,7 +62,7 @@ public class ProfileController {
      */
     @GetMapping("/collected-feeds")
     public ResponseEntity<?> collectedFeeds(
-            @PageableDefault(page = 0, size = 9, sort = "id", direction = Sort.Direction.ASC)
+            @PageableDefault(page = 0, size = 9, sort = "id", direction = Sort.Direction.DESC)
             Pageable pageable,
             @AuthenticationPrincipal JwtUserDetails userDetails
     ) {

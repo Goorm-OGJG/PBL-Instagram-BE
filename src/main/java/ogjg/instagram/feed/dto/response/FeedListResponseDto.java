@@ -39,11 +39,11 @@ public class FeedListResponseDto {
         private Long likeCount;
         private boolean likeStatus;
         private boolean collectionStatus;
-
+        private Long commentCount;
         private List<FeedMediaResponseDto> feedMedias;
 
         @Builder
-        public FeedListDto(User user, Feed feed, Long likeCount, boolean likeStatus, boolean collectionStatus, List<FeedMediaResponseDto> feedMedias) {
+        public FeedListDto(User user, Feed feed, Long likeCount, boolean likeStatus, boolean collectionStatus, Long commentCount, List<FeedMediaResponseDto> feedMedias) {
             this.userId = user.getId();
             this.userImg = user.getUserImg();
             this.nickname = user.getNickname();
@@ -53,6 +53,7 @@ public class FeedListResponseDto {
             this.likeCount = likeCount;
             this.likeStatus = likeStatus;
             this.collectionStatus = collectionStatus;
+            this.commentCount = commentCount;
             this.feedMedias = feedMedias;
         }
     }

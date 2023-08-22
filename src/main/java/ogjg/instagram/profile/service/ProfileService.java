@@ -6,6 +6,8 @@ import ogjg.instagram.follow.service.FollowService;
 import ogjg.instagram.profile.dto.response.ProfileFeedResponseDto;
 import ogjg.instagram.profile.dto.response.ProfileResponseDto;
 import ogjg.instagram.feed.repository.CollectionFeedRepository;
+import ogjg.instagram.profile.repository.ProfileRepository;
+import ogjg.instagram.user.domain.User;
 import ogjg.instagram.user.service.UserService;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -18,6 +20,7 @@ public class ProfileService {
     private final UserService userService;
     private final FeedRepository feedRepository;
     private final FollowService followService;
+    private final ProfileRepository profileRepository;
 
     @Transactional
     public ProfileFeedResponseDto findCollectedFeeds(Long userId, Pageable pageable) {
@@ -30,13 +33,17 @@ public class ProfileService {
 
     ///todo : Map 조회 단순화
     @Transactional(readOnly = true)
-    public ProfileResponseDto findProfile(Long userId, Long myId) {
+    public ProfileResponseDto findProfile(String nickname, Long loginId) {
+        User user = profileRepository.findByNickname(nickname)
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다. nickname=" + nickname));
+        Long userId = user.getId();
+
         return ProfileResponseDto.from(
                 userService.findById(userId),
                 feedRepository.countAllByUserId(userId),
                 followService.followedCount(userId),
-                followService.followingCount(myId),
-                followService.isFollowing(userId, myId)
+                followService.followingCount(loginId),
+                followService.isFollowing(loginId, userId)
         );
     }
 }

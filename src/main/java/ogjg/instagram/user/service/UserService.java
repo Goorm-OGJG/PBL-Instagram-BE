@@ -86,7 +86,7 @@ public class UserService {
 
     private static String getAccessToken(UserAuthentication userAuth) {
         JwtUserClaimsDto userClaimsDto = JwtUserClaimsDto.builder()
-                .userId(userAuth.getId())
+                .userId(userAuth.getUserId())
                 .username(userAuth.getUsername())
                 .nickname(userAuth.getNickname())
                 .build();

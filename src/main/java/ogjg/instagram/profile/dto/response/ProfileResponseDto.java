@@ -8,6 +8,7 @@ import ogjg.instagram.user.domain.User;
 @Getter
 public class ProfileResponseDto {
 
+    private Long userId;
     private String nickname;
     private String userImg;
     private String userIntro;
@@ -19,6 +20,7 @@ public class ProfileResponseDto {
 
     public static ProfileResponseDto from(User user, Long feedCount, Long followCount, Long followingCount, boolean followingStatus) {
         return ProfileResponseDto.builder()
+                .userId(user.getId())
                 .nickname(user.getNickname())
                 .userImg(user.getUserImg())
                 .userIntro(user.getUserIntro())
