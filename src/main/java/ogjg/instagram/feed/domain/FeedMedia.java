@@ -41,4 +41,8 @@ public class FeedMedia {
         this.createdAt = createdAt;
         this.modifiedAt = modifiedAt;
     }
+
+    public void setFeed(Feed feed) {
+        this.feed = feed;
+    }
 }

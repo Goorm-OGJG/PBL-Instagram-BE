@@ -132,6 +132,12 @@ public class User {
         this.follows = follows;
     }
 
+    public static User reference(Long loginId) {
+        User user = new User();
+        user.id = loginId;
+        return user;
+    }
+
     public void editProfileImg(String imgUrl) {
         this.userImg = imgUrl;
     }

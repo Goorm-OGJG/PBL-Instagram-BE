@@ -54,6 +54,11 @@ public class Feed {
 
     private LocalDateTime modifiedAt;
 
+    public static Feed reference(Long feedId) {
+        Feed feed = new Feed();
+        feed.id = feedId;
+        return feed;
+    }
 
     @Builder
     public Feed(Long id, User user, List<FeedLike> feedLikes, List<CollectionFeed> collectionFeeds, List<HashtagFeed> hashtagFeeds, List<FeedMedia> feedMedias, List<Comment> comments, String content, LocalDateTime createdAt, LocalDateTime modifiedAt) {
@@ -71,13 +76,5 @@ public class Feed {
 
     public void addAllMedias(List<FeedMedia> medias) {
         this.feedMedias = medias;
-    }
-
-    public void clearAll() {
-        feedLikes.clear();
-        collectionFeeds.clear();
-        hashtagFeeds.clear();
-        feedMedias.clear();
-        comments.clear();
     }
 }
