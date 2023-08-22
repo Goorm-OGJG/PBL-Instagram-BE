@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -91,8 +92,7 @@ public class FollowService {
     @Transactional(readOnly = true)
     public List<Long> getFollowedIds(Long id) {
         return followedList(id).stream()
-                .map((FollowedResponse::getFollowId))
+                .map((FollowedResponse::getUserId))
                 .toList();
     }
-
 }
