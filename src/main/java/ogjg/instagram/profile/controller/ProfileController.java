@@ -44,17 +44,17 @@ public class ProfileController {
     /**
      * 내 피드 목록 가져오기 - 무한 스크롤 9개씩
      */
-    @GetMapping("/{userId}/feeds")
+    @GetMapping("/{nickname}/feeds")
     public ResponseEntity<?> myFeeds(
-            @PathVariable ("userId") Long userId,
-            @PageableDefault(page = 0, size = 9, sort = "id", direction = Sort.Direction.ASC)
+            @PathVariable ("nickname") String nickname,
+            @PageableDefault(page = 0, size = 9, sort = "id", direction = Sort.Direction.DESC)
             Pageable pageable,
             @AuthenticationPrincipal JwtUserDetails userDetails
     ) {
         Long loginId = userDetails.getUserId();
 
         return ResponseEntity.ok(
-                feedService.findProfileFeedsByUserId(userId, pageable));
+                feedService.findProfileFeedsByUserId(nickname, pageable));
     }
 
     /**
@@ -62,7 +62,7 @@ public class ProfileController {
      */
     @GetMapping("/collected-feeds")
     public ResponseEntity<?> collectedFeeds(
-            @PageableDefault(page = 0, size = 9, sort = "id", direction = Sort.Direction.ASC)
+            @PageableDefault(page = 0, size = 9, sort = "id", direction = Sort.Direction.DESC)
             Pageable pageable,
             @AuthenticationPrincipal JwtUserDetails userDetails
     ) {

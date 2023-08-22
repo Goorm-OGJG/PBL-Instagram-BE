@@ -35,7 +35,7 @@ public class ProfileService {
     @Transactional(readOnly = true)
     public ProfileResponseDto findProfile(String nickname, Long loginId) {
         User user = profileRepository.findByNickname(nickname)
-                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다. id=" + loginId));
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 유저입니다. nickname=" + nickname));
         Long userId = user.getId();
 
         return ProfileResponseDto.from(
@@ -43,7 +43,7 @@ public class ProfileService {
                 feedRepository.countAllByUserId(userId),
                 followService.followedCount(userId),
                 followService.followingCount(loginId),
-                followService.isFollowing(userId, loginId)
+                followService.isFollowing(loginId, userId)
         );
     }
 }
