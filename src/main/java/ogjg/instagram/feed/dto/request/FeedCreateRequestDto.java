@@ -4,6 +4,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 import ogjg.instagram.feed.domain.Feed;
 import ogjg.instagram.feed.domain.FeedMedia;
 import ogjg.instagram.hashtag.domain.Hashtag;
@@ -14,6 +15,7 @@ import java.util.List;
 
 import static lombok.AccessLevel.PROTECTED;
 
+@Slf4j
 @ToString
 @Getter @Setter
 @NoArgsConstructor(access = PROTECTED)
@@ -64,7 +66,7 @@ public class FeedCreateRequestDto {
 
     private String substringType(String url) {
         int lastIndex = url.lastIndexOf(".");
-        return url.substring(lastIndex, url.length());
+        return url.substring(lastIndex + 1, url.length());
     }
 
     public List<Hashtag> toHashtags() {

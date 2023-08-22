@@ -15,7 +15,7 @@ import org.springframework.web.bind.annotation.*;
 @RequestMapping(path = "/api/collections", produces = MediaType.APPLICATION_JSON_VALUE)
 public class CollectionController {
 
-    public static final long FIXED_COLLECTION_ID = 1L;
+    public static final String FIXED_COLLECTION_NAME = "1";
     private final CollectionService collectionService;
 
     /**
@@ -29,7 +29,7 @@ public class CollectionController {
         Long loginId = userDetails.getUserId();
         log.info("loginId = {}", loginId);
 
-        collectionService.collectFeed(feedId, FIXED_COLLECTION_ID, loginId);
+        collectionService.collectFeed(feedId, FIXED_COLLECTION_NAME, loginId);
         return ResponseEntity.ok().build();
     }
 
@@ -44,7 +44,7 @@ public class CollectionController {
         Long loginId = userDetails.getUserId();
         log.info("loginId = {}", loginId);
 
-        collectionService.deleteFeed(feedId, FIXED_COLLECTION_ID, loginId);
+        collectionService.deleteFeed(feedId, FIXED_COLLECTION_NAME, loginId);
         return ResponseEntity.ok().build();
     }
 }
