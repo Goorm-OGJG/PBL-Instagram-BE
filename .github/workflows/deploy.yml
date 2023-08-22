@@ -44,7 +44,7 @@ jobs:
           echo "IMAGE_NAME=${{ secrets.DOCKER_HUB_USERNAME }}/ogjg-instagram:$VERSION" >> $GITHUB_ENV
 
       - name: Zip the docker-compose file
-        run: zip deployment.zip docker-compose.yml
+        run: zip deployment.zip ../../docker-compose.yml
 
       - name: Build services in docker-compose.yml
         run: docker-compose build
