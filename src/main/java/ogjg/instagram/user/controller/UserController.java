@@ -48,8 +48,11 @@ public class UserController {
     }
 
     @GetMapping("/logout")
-    public ResponseEntity<?> logout(@AuthenticationPrincipal JwtUserDetails userDetails) {
-        userService.logout(userDetails.getUsername());
+    public ResponseEntity<?> logout(
+            @AuthenticationPrincipal JwtUserDetails userDetails,
+            HttpServletResponse response
+    ) {
+        userService.logout(userDetails.getUsername(), response);
         return new ResponseEntity<>("로그아웃 되었습니다.", HttpStatus.OK);
     }
 }
