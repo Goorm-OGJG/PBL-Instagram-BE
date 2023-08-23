@@ -31,7 +31,7 @@ public class UserController {
         return new ResponseEntity<>("Access Token 재발급 성공", HttpStatus.OK);
     }
 
-    @GetMapping("/{email}")
+    @GetMapping("/email/{email}")
     public ResponseEntity<?> checkEmail(@PathVariable @Email String email) {
         if (userService.isEmailAlreadyInUse(email)) {
             return new ResponseEntity<>("이미 사용되고 있는 이메일입니다.", HttpStatus.BAD_REQUEST);
@@ -40,7 +40,7 @@ public class UserController {
         }
     }
 
-    @GetMapping("/{nickname}")
+    @GetMapping("/nickname/{nickname}")
     public ResponseEntity<?> checkNickname(@PathVariable String nickname) {
         if (userService.isNicknameAlreadyInUse(nickname)) {
             return new ResponseEntity<>("이미 사용되고 있는 닉네임입니다.", HttpStatus.BAD_REQUEST);
