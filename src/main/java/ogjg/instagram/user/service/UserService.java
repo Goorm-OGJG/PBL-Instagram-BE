@@ -15,6 +15,7 @@ import ogjg.instagram.user.dto.SignupRequestDto;
 import ogjg.instagram.user.repository.UserAuthenticationRepository;
 import ogjg.instagram.user.repository.UserRepository;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -122,8 +123,24 @@ public class UserService {
     }
 
     @Transactional
-    public void logout(String username) {
+    public void logout(String username, HttpServletResponse response) {
+        deleteRefreshToken(username);
+        deleteRefreshTokenCookie(response);
+    }
+
+    private void deleteRefreshToken(String username) {
         Optional<UserAuthentication> userAuth = authenticationRepository.findByUsername(username);
         userAuth.ifPresent(authenticationRepository::delete);
+    }
+
+    private void deleteRefreshTokenCookie(HttpServletResponse response) {
+        ResponseCookie cookie = ResponseCookie.from("refreshToken", null)
+                .maxAge(0)
+                .httpOnly(true)
+                .secure(true)
+                .sameSite("None")
+                .path("/")
+                .build();
+        response.setHeader("Set-Cookie", cookie.toString());
     }
 }
