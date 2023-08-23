@@ -34,19 +34,17 @@ public class UserController {
     @GetMapping("/email/{email}")
     public ResponseEntity<?> checkEmail(@PathVariable @Email String email) {
         if (userService.isEmailAlreadyInUse(email)) {
-            return new ResponseEntity<>("이미 사용되고 있는 이메일입니다.", HttpStatus.BAD_REQUEST);
-        } else {
-            return new ResponseEntity<>("사용 가능한 이메일입니다.", HttpStatus.OK);
+            throw new IllegalArgumentException("이미 사용되고 있는 이메일입니다.");
         }
+        return new ResponseEntity<>("사용 가능한 이메일입니다.", HttpStatus.OK);
     }
 
     @GetMapping("/nickname/{nickname}")
     public ResponseEntity<?> checkNickname(@PathVariable String nickname) {
         if (userService.isNicknameAlreadyInUse(nickname)) {
-            return new ResponseEntity<>("이미 사용되고 있는 닉네임입니다.", HttpStatus.BAD_REQUEST);
-        } else {
-            return new ResponseEntity<>("사용 가능한 닉네임입니다.", HttpStatus.OK);
+            throw new IllegalArgumentException("이미 사용되고 있는 닉네임입니다.");
         }
+        return new ResponseEntity<>("사용 가능한 닉네임입니다.", HttpStatus.OK);
     }
 
     @GetMapping("/logout")
