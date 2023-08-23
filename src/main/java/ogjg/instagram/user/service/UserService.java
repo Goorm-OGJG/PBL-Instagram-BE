@@ -134,7 +134,7 @@ public class UserService {
     }
 
     private void deleteRefreshTokenCookie(HttpServletResponse response) {
-        ResponseCookie cookie = ResponseCookie.from("refreshToken", null)
+        ResponseCookie cookie = ResponseCookie.from("RefreshToken", null)
                 .maxAge(0)
                 .httpOnly(true)
                 .secure(true)
