@@ -23,8 +23,8 @@ public class CustomGlobalFilterExceptionHandler implements Filter {
         } catch (Exception e) {
             HttpServletResponse response = (HttpServletResponse) servletResponse;
             response.setStatus(HttpStatus.BAD_REQUEST.value());
-            response.getWriter().write("JWT 검증 오류: " + e.getMessage());
             response.setCharacterEncoding("UTF-8");
+            response.getWriter().write("JWT 검증 오류: " + e.getMessage());
             // 필요에 따라 다른 처리를 수행할 수 있습니다.
         }
     }
