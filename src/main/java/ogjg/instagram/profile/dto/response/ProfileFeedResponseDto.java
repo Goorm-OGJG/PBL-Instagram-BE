@@ -20,8 +20,9 @@ public class ProfileFeedResponseDto {
         this.feedList = feedList;
     }
 
-    public static ProfileFeedResponseDto from(Page<ProfileFeedDto> feedPage) {
+    public static ProfileFeedResponseDto from(Page<Feed> feedPage) {
         List<ProfileFeedDto> feedList = feedPage.getContent().stream()
+                .map((feed -> new ProfileFeedDto(feed)))
         .collect(Collectors.toList());
 
         ProfileFeedResponseDto responseDto = new ProfileFeedResponseDto(feedList);
@@ -72,5 +73,12 @@ public class ProfileFeedResponseDto {
             this.commentCount = Long.valueOf(feed.getComments().size());
         }
 
+        public ProfileFeedDto(Feed feed) {
+            this.feedId = feed.getId();
+            this.mediaUrl = feed.getFeedMedias().get(0).getMediaUrl();
+            this.isMediaOne = feed.getFeedMedias().size() == 1;
+            this.likeCount = Long.valueOf(feed.getFeedLikes().size());
+            this.commentCount = Long.valueOf(feed.getComments().size());
+        }
     }
 }
