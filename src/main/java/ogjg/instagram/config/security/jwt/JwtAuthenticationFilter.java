@@ -13,6 +13,7 @@ import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
 import java.util.List;
+import java.util.regex.Pattern;
 
 @RequiredArgsConstructor
 public class JwtAuthenticationFilter extends OncePerRequestFilter {
@@ -25,7 +26,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
 
-        if (permitUrlList.contains(request.getRequestURI())) {
+        if (isPermitted(request.getRequestURI())) {
             filterChain.doFilter(request, response);
             return;
         }
@@ -45,6 +46,15 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
         }
 
         filterChain.doFilter(request, response);
+    }
+
+    private boolean isPermitted(String requestUri) {
+        for (String pattern : permitUrlList) {
+            if (Pattern.matches(pattern, requestUri)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private String getJwt(HttpServletRequest request) {

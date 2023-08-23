@@ -21,6 +21,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Arrays;
+import java.util.Optional;
 
 import static ogjg.instagram.config.security.jwt.JwtUtils.*;
 
@@ -84,6 +85,16 @@ public class UserService {
         }
     }
 
+    @Transactional
+    public boolean isEmailAlreadyInUse(String email) {
+        return userRepository.findByEmail(email).isPresent();
+    }
+
+    @Transactional
+    public boolean isNicknameAlreadyInUse(String nickname) {
+        return userRepository.findByNickname(nickname).isPresent();
+    }
+
     private static String getAccessToken(UserAuthentication userAuth) {
         JwtUserClaimsDto userClaimsDto = JwtUserClaimsDto.builder()
                 .userId(userAuth.getUserId())
@@ -107,5 +118,11 @@ public class UserService {
                 .findFirst()
                 .map(Cookie::getValue)
                 .orElseThrow(() -> new RuntimeException("쿠키에 Refresh Token이 존재하지 않습니다."));
+    }
+
+    @Transactional
+    public void logout(String username) {
+        Optional<UserAuthentication> userAuth = authenticationRepository.findByUsername(username);
+        userAuth.ifPresent(authenticationRepository::delete);
     }
 }
