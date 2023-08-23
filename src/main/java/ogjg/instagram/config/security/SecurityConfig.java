@@ -43,7 +43,9 @@ public class SecurityConfig {
 
     private final List<String> permitJwtUrlList = new ArrayList<>(
             List.of("/api/users/signup",
-                       "/api/users/token"
+                    "/api/users/token",
+                    "/api/users/email/*",
+                    "/api/users/nickname/*"
             ));
 
     @Bean
