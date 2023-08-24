@@ -10,6 +10,7 @@ import ogjg.instagram.profile.dto.request.ProfileEditRequestDto;
 import ogjg.instagram.profile.dto.request.ProfileImgEditRequestDto;
 import ogjg.instagram.user.domain.User;
 import ogjg.instagram.user.domain.UserAuthentication;
+import ogjg.instagram.user.dto.AuthenticationNumberRequestDto;
 import ogjg.instagram.user.dto.JwtUserClaimsDto;
 import ogjg.instagram.user.dto.SignupRequestDto;
 import ogjg.instagram.user.repository.UserAuthenticationRepository;
@@ -142,5 +143,18 @@ public class UserService {
                 .path("/")
                 .build();
         response.setHeader("Set-Cookie", cookie.toString());
+    }
+
+    @Transactional(readOnly = true)
+    public User findMemberIfExists(AuthenticationNumberRequestDto authenticationNumberRequestDto) {
+        if ("email".equals(authenticationNumberRequestDto.getType())) {
+            return userRepository.findByEmail(authenticationNumberRequestDto.getUsername())
+                    .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+        }
+        if ("nickname".equals(authenticationNumberRequestDto.getType())) {
+            return userRepository.findByNickname(authenticationNumberRequestDto.getUsername())
+                    .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+        }
+        throw new IllegalArgumentException("요청 타입이 존재하지 않습니다.");
     }
 }
