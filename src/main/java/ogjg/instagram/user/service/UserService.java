@@ -179,5 +179,15 @@ public class UserService {
                 .build();
 
         authenticationNumberRepository.save(userAuthenticationNumber);
+
+        sendVerificationNumberToEmail(user, authenticationCode);
+    }
+
+    private void sendVerificationNumberToEmail(User user, String authenticationCode) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("[OGJG] Instagram 인증번호 안내입니다.");
+        message.setText("안녕하세요. OGJG입니다. 인증번호는 [" + authenticationCode + "] 입니다.");
+        mailSender.send(message);
     }
 }
