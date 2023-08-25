@@ -2,10 +2,12 @@ package ogjg.instagram.search.dto.response;
 
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import ogjg.instagram.hashtag.domain.HashtagFeed;
 
 import java.util.List;
 
+@NoArgsConstructor
 @Getter
 public class SearchHashtagResponseDto {
     private boolean isUser;
