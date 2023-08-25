@@ -10,17 +10,24 @@ import ogjg.instagram.profile.dto.request.ProfileEditRequestDto;
 import ogjg.instagram.profile.dto.request.ProfileImgEditRequestDto;
 import ogjg.instagram.user.domain.User;
 import ogjg.instagram.user.domain.UserAuthentication;
+import ogjg.instagram.user.domain.UserAuthenticationNumber;
 import ogjg.instagram.user.dto.JwtUserClaimsDto;
 import ogjg.instagram.user.dto.SignupRequestDto;
+import ogjg.instagram.user.dto.UserAuthRequestDto;
+import ogjg.instagram.user.repository.UserAuthenticationNumberRepository;
 import ogjg.instagram.user.repository.UserAuthenticationRepository;
 import ogjg.instagram.user.repository.UserRepository;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseCookie;
 import org.springframework.http.ResponseEntity;
+import org.springframework.mail.SimpleMailMessage;
+import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.security.SecureRandom;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 
@@ -32,7 +39,9 @@ public class UserService {
 
     private final UserRepository userRepository;
     private final UserAuthenticationRepository authenticationRepository;
+    private final UserAuthenticationNumberRepository authenticationNumberRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JavaMailSender mailSender;
 
     @Transactional(readOnly = true)
     public User findById(Long userId) {
@@ -142,5 +151,92 @@ public class UserService {
                 .path("/")
                 .build();
         response.setHeader("Set-Cookie", cookie.toString());
+    }
+
+    @Transactional(readOnly = true)
+    public User findMemberIfExists(UserAuthRequestDto userAuthRequestDto) {
+        if ("email".equals(userAuthRequestDto.getType())) {
+            return userRepository.findByEmail(userAuthRequestDto.getUsername())
+                    .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+        }
+        if ("nickname".equals(userAuthRequestDto.getType())) {
+            return userRepository.findByNickname(userAuthRequestDto.getUsername())
+                    .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+        }
+        throw new IllegalArgumentException("요청 타입이 존재하지 않습니다.");
+    }
+
+    @Transactional
+    public void generateAuthenticationNumber(User user) {
+        SecureRandom random = new SecureRandom();
+        String authenticationCode = String.valueOf(random.nextInt(900000) + 100000);
+
+        UserAuthenticationNumber userAuthenticationNumber = UserAuthenticationNumber.builder()
+                .userId(user.getId())
+                .authenticationCode(authenticationCode)
+                .createdAt(LocalDateTime.now())
+                .expiredAt(LocalDateTime.now().plusMinutes(3))
+                .build();
+
+        authenticationNumberRepository.save(userAuthenticationNumber);
+
+        sendVerificationNumberToEmail(user, authenticationCode);
+    }
+
+    private void sendVerificationNumberToEmail(User user, String authenticationCode) {
+        SimpleMailMessage message = new SimpleMailMessage();
+        message.setTo(user.getEmail());
+        message.setSubject("[OGJG] Instagram 인증번호 안내입니다.");
+        message.setText("안녕하세요. OGJG입니다. 인증번호는 [" + authenticationCode + "] 입니다.");
+        mailSender.send(message);
+    }
+
+    @Transactional
+    public User isValidAuthNumber(UserAuthRequestDto userAuthRequestDto) {
+
+        UserAuthenticationNumber authNumber = authenticationNumberRepository.findByAuthenticationCode(userAuthRequestDto.getValidate())
+                .orElseThrow(() -> new IllegalArgumentException("유효한 인증번호가 아닙니다."));
+
+        User authNumberUser = userRepository.findById(authNumber.getUserId()).orElseThrow(
+                () -> new IllegalArgumentException("회원이 존재하지 않습니다.")
+        );
+
+        if (!isSameUserAuthentication(userAuthRequestDto, authNumberUser)) {
+            throw new IllegalArgumentException("변경 요청 회원과 인증번호 발급 회원이 일치하지 않습니다.");
+        }
+
+        if (authNumber.getExpiredAt().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("인증번호가 만료되었습니다.");
+        }
+
+        return authNumberUser;
+    }
+
+    private boolean isSameUserAuthentication(UserAuthRequestDto userAuthRequestDto, User authNumberUser) {
+        if ("email".equals(userAuthRequestDto.getType())) {
+            return authNumberUser.getEmail().equals(userAuthRequestDto.getUsername());
+        }
+        if ("nickname".equals(userAuthRequestDto.getType())) {
+            return authNumberUser.getNickname().equals(userAuthRequestDto.getUsername());
+        }
+        return false;
+    }
+
+    public String generateTemporaryToken(User user) {
+        JwtUserClaimsDto userClaimsDto = JwtUserClaimsDto.builder()
+                .userId(user.getId())
+                .username(user.getEmail())
+                .nickname(user.getNickname())
+                .build();
+
+        return "Bearer " + generateAccessToken(userClaimsDto);
+    }
+
+    @Transactional
+    public void changePassword(Long userId, UserAuthRequestDto userAuthRequestDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+
+        user.changePassword(passwordEncoder.encode(userAuthRequestDto.getPassword()));
     }
 }

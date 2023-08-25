@@ -6,8 +6,11 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import ogjg.instagram.config.security.jwt.JwtUserDetails;
+import ogjg.instagram.user.domain.User;
 import ogjg.instagram.user.dto.SignupRequestDto;
+import ogjg.instagram.user.dto.UserAuthRequestDto;
 import ogjg.instagram.user.service.UserService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -54,5 +57,37 @@ public class UserController {
     ) {
         userService.logout(userDetails.getUsername(), response);
         return new ResponseEntity<>("로그아웃 되었습니다.", HttpStatus.OK);
+    }
+
+    @PostMapping("/exist")
+    public ResponseEntity<?> generateAuthenticationNumber(
+            @RequestBody UserAuthRequestDto userAuthRequestDto) {
+        User user = userService.findMemberIfExists(userAuthRequestDto);
+        userService.generateAuthenticationNumber(user);
+
+        return new ResponseEntity<>("인증번호가 메일로 전송 되었습니다.", HttpStatus.OK);
+    }
+
+    @PostMapping("/auth")
+    public ResponseEntity<?> verifyAuthenticationNumber(
+            @RequestBody UserAuthRequestDto userAuthRequestDto
+            ) {
+        User user = userService.isValidAuthNumber(userAuthRequestDto);
+
+        String temporaryToken = userService.generateTemporaryToken(user);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", temporaryToken);
+
+        return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<?> changePassword(
+            @AuthenticationPrincipal JwtUserDetails userDetails,
+            @RequestBody UserAuthRequestDto userAuthRequestDto) {
+        userService.changePassword(userDetails.getUserId(), userAuthRequestDto);
+
+        return new ResponseEntity<>("비밀번호 변경이 완료되었습니다.", HttpStatus.OK);
     }
 }
