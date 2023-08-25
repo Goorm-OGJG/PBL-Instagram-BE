@@ -53,7 +53,7 @@ public class SearchService {
                         .getContent().stream()
                         .map((user) -> SearchNicknameResponseDto.SearchNicknameDto.of(
                                 user,
-                                followService.isFollowing(loginId, user.getId())))
+                                followService.isFollowingUser(loginId, user.getId())))
                         .collect(Collectors.toUnmodifiableList()),
                 isUser);
     }

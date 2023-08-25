@@ -65,7 +65,7 @@ public class FollowService {
                 .map( followResponse -> FollowedResponse.builder()
                         .followResponse(followResponse)
                         .followingStatus(
-                                followRepository.followerMeToo(
+                                followRepository.isFollowingUser(
                                         followResponse.getFollowId(),
                                         followResponse.getUserId()) != null
                         )
@@ -84,9 +84,8 @@ public class FollowService {
     }
 
     @Transactional(readOnly = true)
-    public boolean isFollowing(Long loginId, Long userId) {
-        return followRepository.followerMeToo(loginId, userId) != null;
-
+    public boolean isFollowingUser(Long loginId, Long userId) {
+        return followRepository.isFollowingUser(loginId, userId) != null;
     }
 
     @Transactional(readOnly = true)
