@@ -11,10 +11,9 @@ import ogjg.instagram.profile.dto.request.ProfileImgEditRequestDto;
 import ogjg.instagram.user.domain.User;
 import ogjg.instagram.user.domain.UserAuthentication;
 import ogjg.instagram.user.domain.UserAuthenticationNumber;
-import ogjg.instagram.user.dto.AuthNumberVerificationDto;
 import ogjg.instagram.user.dto.JwtUserClaimsDto;
 import ogjg.instagram.user.dto.SignupRequestDto;
-import ogjg.instagram.user.dto.UserAuthNumberRequestDto;
+import ogjg.instagram.user.dto.UserAuthRequestDto;
 import ogjg.instagram.user.repository.UserAuthenticationNumberRepository;
 import ogjg.instagram.user.repository.UserAuthenticationRepository;
 import ogjg.instagram.user.repository.UserRepository;
@@ -155,13 +154,13 @@ public class UserService {
     }
 
     @Transactional(readOnly = true)
-    public User findMemberIfExists(UserAuthNumberRequestDto userAuthNumberRequestDto) {
-        if ("email".equals(userAuthNumberRequestDto.getType())) {
-            return userRepository.findByEmail(userAuthNumberRequestDto.getUsername())
+    public User findMemberIfExists(UserAuthRequestDto userAuthRequestDto) {
+        if ("email".equals(userAuthRequestDto.getType())) {
+            return userRepository.findByEmail(userAuthRequestDto.getUsername())
                     .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
         }
-        if ("nickname".equals(userAuthNumberRequestDto.getType())) {
-            return userRepository.findByNickname(userAuthNumberRequestDto.getUsername())
+        if ("nickname".equals(userAuthRequestDto.getType())) {
+            return userRepository.findByNickname(userAuthRequestDto.getUsername())
                     .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
         }
         throw new IllegalArgumentException("요청 타입이 존재하지 않습니다.");
@@ -193,16 +192,16 @@ public class UserService {
     }
 
     @Transactional
-    public User isValidAuthNumber(AuthNumberVerificationDto authNumberVerificationDto) {
+    public User isValidAuthNumber(UserAuthRequestDto userAuthRequestDto) {
 
-        UserAuthenticationNumber authNumber = authenticationNumberRepository.findByAuthenticationCode(authNumberVerificationDto.getValidate())
+        UserAuthenticationNumber authNumber = authenticationNumberRepository.findByAuthenticationCode(userAuthRequestDto.getValidate())
                 .orElseThrow(() -> new IllegalArgumentException("유효한 인증번호가 아닙니다."));
 
         User authNumberUser = userRepository.findById(authNumber.getUserId()).orElseThrow(
                 () -> new IllegalArgumentException("회원이 존재하지 않습니다.")
         );
 
-        if (!isSameUserAuthentication(authNumberVerificationDto, authNumberUser)) {
+        if (!isSameUserAuthentication(userAuthRequestDto, authNumberUser)) {
             throw new IllegalArgumentException("변경 요청 회원과 인증번호 발급 회원이 일치하지 않습니다.");
         }
 
@@ -213,12 +212,12 @@ public class UserService {
         return authNumberUser;
     }
 
-    private boolean isSameUserAuthentication(AuthNumberVerificationDto authNumberVerificationDto, User authNumberUser) {
-        if ("email".equals(authNumberVerificationDto.getType())) {
-            return authNumberUser.getEmail().equals(authNumberVerificationDto.getUsername());
+    private boolean isSameUserAuthentication(UserAuthRequestDto userAuthRequestDto, User authNumberUser) {
+        if ("email".equals(userAuthRequestDto.getType())) {
+            return authNumberUser.getEmail().equals(userAuthRequestDto.getUsername());
         }
-        if ("nickname".equals(authNumberVerificationDto.getType())) {
-            return authNumberUser.getNickname().equals(authNumberVerificationDto.getUsername());
+        if ("nickname".equals(userAuthRequestDto.getType())) {
+            return authNumberUser.getNickname().equals(userAuthRequestDto.getUsername());
         }
         return false;
     }
@@ -231,5 +230,13 @@ public class UserService {
                 .build();
 
         return "Bearer " + generateAccessToken(userClaimsDto);
+    }
+
+    @Transactional
+    public void changePassword(Long userId, UserAuthRequestDto userAuthRequestDto) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new IllegalArgumentException("회원이 존재하지 않습니다."));
+
+        user.changePassword(passwordEncoder.encode(userAuthRequestDto.getPassword()));
     }
 }
