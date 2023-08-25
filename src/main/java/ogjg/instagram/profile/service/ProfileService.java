@@ -31,7 +31,6 @@ public class ProfileService {
         return collectionFeedRepository.findByKeys(feedId, userId).isPresent();
     }
 
-    ///todo : Map 조회 단순화
     @Transactional(readOnly = true)
     public ProfileResponseDto findProfile(String nickname, Long loginId) {
         User user = profileRepository.findByNickname(nickname)
