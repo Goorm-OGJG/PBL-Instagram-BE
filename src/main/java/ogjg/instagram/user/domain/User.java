@@ -147,4 +147,8 @@ public class User {
         this.recommend = requestDto.isRecommended();
         this.secret = requestDto.isSecret();
     }
+
+    public void changePassword(String newPassword) {
+        this.password = newPassword;
+    }
 }
