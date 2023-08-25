@@ -3,13 +3,18 @@ package ogjg.instagram.like.service;
 import lombok.RequiredArgsConstructor;
 import ogjg.instagram.comment.domain.InnerComment;
 import ogjg.instagram.comment.repository.InnerCommentRepository;
+import ogjg.instagram.follow.repository.FollowRepository;
 import ogjg.instagram.like.domain.innerCommentLike.InnerCommentLike;
 import ogjg.instagram.like.dto.innerCommentLike.InnerCommentLikeDto;
+import ogjg.instagram.like.dto.innerCommentLike.InnerCommentLikeUserResponse;
 import ogjg.instagram.like.repository.InnerCommentLikeRepository;
 import ogjg.instagram.user.domain.User;
 import ogjg.instagram.user.repository.UserRepository;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -18,6 +23,7 @@ public class InnerCommentLikeService {
     private final InnerCommentLikeRepository innerCommentLikeRepository;
     private final UserRepository userRepository;
     private final InnerCommentRepository innerCommentRepository;
+    private final FollowRepository followRepository;
 
     @Transactional
     public void innerCommentLike(Long userId,Long innerCommentId ){
@@ -26,6 +32,15 @@ public class InnerCommentLikeService {
                 new InnerCommentLike(innerCommentLikeDto, userFindByUserId(userId), innerCommentFindById(innerCommentId))
         );
     }
+
+    public List<InnerCommentLikeUserResponse> innerCommentLikeList(Long innerCommentId, Long userId, Pageable pageable){
+        return innerCommentLikeRepository.innerCommentLikeUserList(innerCommentId, pageable)
+                .stream()
+                .map(innerCommentLikeUserResponse -> innerCommentLikeUserResponse.putFollowStatus(
+                        followRepository.followerMeToo(userId , innerCommentLikeUserResponse.getUserId())== null))
+                .toList();
+    }
+
 
     @Transactional
     public void innerCommentUnlike(Long innerCommentId, Long userId){
