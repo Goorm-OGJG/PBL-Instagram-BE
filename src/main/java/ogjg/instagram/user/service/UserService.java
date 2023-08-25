@@ -11,6 +11,7 @@ import ogjg.instagram.profile.dto.request.ProfileImgEditRequestDto;
 import ogjg.instagram.user.domain.User;
 import ogjg.instagram.user.domain.UserAuthentication;
 import ogjg.instagram.user.domain.UserAuthenticationNumber;
+import ogjg.instagram.user.dto.AuthNumberVerificationDto;
 import ogjg.instagram.user.dto.JwtUserClaimsDto;
 import ogjg.instagram.user.dto.SignupRequestDto;
 import ogjg.instagram.user.dto.UserAuthNumberRequestDto;
@@ -189,5 +190,46 @@ public class UserService {
         message.setSubject("[OGJG] Instagram 인증번호 안내입니다.");
         message.setText("안녕하세요. OGJG입니다. 인증번호는 [" + authenticationCode + "] 입니다.");
         mailSender.send(message);
+    }
+
+    @Transactional
+    public User isValidAuthNumber(AuthNumberVerificationDto authNumberVerificationDto) {
+
+        UserAuthenticationNumber authNumber = authenticationNumberRepository.findByAuthenticationCode(authNumberVerificationDto.getValidate())
+                .orElseThrow(() -> new IllegalArgumentException("유효한 인증번호가 아닙니다."));
+
+        User authNumberUser = userRepository.findById(authNumber.getUserId()).orElseThrow(
+                () -> new IllegalArgumentException("회원이 존재하지 않습니다.")
+        );
+
+        if (!isSameUserAuthentication(authNumberVerificationDto, authNumberUser)) {
+            throw new IllegalArgumentException("변경 요청 회원과 인증번호 발급 회원이 일치하지 않습니다.");
+        }
+
+        if (authNumber.getExpiredAt().isBefore(LocalDateTime.now())) {
+            throw new IllegalArgumentException("인증번호가 만료되었습니다.");
+        }
+
+        return authNumberUser;
+    }
+
+    private boolean isSameUserAuthentication(AuthNumberVerificationDto authNumberVerificationDto, User authNumberUser) {
+        if ("email".equals(authNumberVerificationDto.getType())) {
+            return authNumberUser.getEmail().equals(authNumberVerificationDto.getUsername());
+        }
+        if ("nickname".equals(authNumberVerificationDto.getType())) {
+            return authNumberUser.getNickname().equals(authNumberVerificationDto.getUsername());
+        }
+        return false;
+    }
+
+    public String generateTemporaryToken(User user) {
+        JwtUserClaimsDto userClaimsDto = JwtUserClaimsDto.builder()
+                .userId(user.getId())
+                .username(user.getEmail())
+                .nickname(user.getNickname())
+                .build();
+
+        return "Bearer " + generateAccessToken(userClaimsDto);
     }
 }
