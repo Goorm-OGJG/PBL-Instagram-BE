@@ -165,4 +165,19 @@ public class UserService {
         }
         throw new IllegalArgumentException("요청 타입이 존재하지 않습니다.");
     }
+
+    @Transactional
+    public void generateAuthenticationNumber(User user) {
+        SecureRandom random = new SecureRandom();
+        String authenticationCode = String.valueOf(random.nextInt(900000) + 100000);
+
+        UserAuthenticationNumber userAuthenticationNumber = UserAuthenticationNumber.builder()
+                .userId(user.getId())
+                .authenticationCode(authenticationCode)
+                .createdAt(LocalDateTime.now())
+                .expiredAt(LocalDateTime.now().plusMinutes(3))
+                .build();
+
+        authenticationNumberRepository.save(userAuthenticationNumber);
+    }
 }
