@@ -65,7 +65,7 @@ public class FollowService {
                 .map( followResponse -> FollowedResponse.builder()
                         .followResponse(followResponse)
                         .followingStatus(
-                                followRepository.isFollowingUser(
+                                followRepository.followerMeToo(
                                         followResponse.getFollowId(),
                                         followResponse.getUserId()) != null
                         )
