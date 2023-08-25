@@ -43,7 +43,7 @@ public class ProfileService {
                 feedRepository.countAllByUserId(userId),
                 followService.followedCount(userId),
                 followService.followingCount(userId),
-                followService.isFollowing(loginId, userId)
+                followService.isFollowingUser(loginId, userId)
         );
     }
 }

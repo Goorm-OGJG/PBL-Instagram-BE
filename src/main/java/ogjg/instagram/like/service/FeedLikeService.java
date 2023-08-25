@@ -42,7 +42,7 @@ public class FeedLikeService {
         return feedLikeRepository.feedLikeUserList(feedId, pageable)
                 .stream()
                 .map(feedLikeUserResponse -> feedLikeUserResponse.putFollowStatus(
-                        followRepository.followerMeToo(userId , feedLikeUserResponse.getUserId())== null)
+                        followRepository.isFollowingUser(userId , feedLikeUserResponse.getUserId())== null)
                 )
                 .toList();
     }

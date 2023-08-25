@@ -42,7 +42,7 @@ public class CommentLikeService {
         return commentLikeRepository.commentLikeUserList(commentId, pageable)
                 .stream()
                 .map(commentLikeUserResponse -> commentLikeUserResponse.putFollowStatus(
-                        followRepository.followerMeToo(userId , commentLikeUserResponse.getUserId())== null))
+                        followRepository.isFollowingUser(userId , commentLikeUserResponse.getUserId())== null))
                 .toList();
     }
 
