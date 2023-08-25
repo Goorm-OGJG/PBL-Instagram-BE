@@ -45,7 +45,9 @@ public class SecurityConfig {
             List.of("/api/users/signup",
                     "/api/users/token",
                     "/api/users/email/.*",
-                    "/api/users/nickname/.*"
+                    "/api/users/nickname/.*",
+                    "/api/users/exist",
+                    "/api/users/auth"
             ));
 
     @Bean
