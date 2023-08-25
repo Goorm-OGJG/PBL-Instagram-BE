@@ -7,9 +7,11 @@ import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import ogjg.instagram.config.security.jwt.JwtUserDetails;
 import ogjg.instagram.user.domain.User;
-import ogjg.instagram.user.dto.UserAuthNumberRequestDto;
+import ogjg.instagram.user.dto.AuthNumberVerificationDto;
 import ogjg.instagram.user.dto.SignupRequestDto;
+import ogjg.instagram.user.dto.UserAuthNumberRequestDto;
 import ogjg.instagram.user.service.UserService;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -65,5 +67,19 @@ public class UserController {
         userService.generateAuthenticationNumber(user);
 
         return new ResponseEntity<>("인증번호가 메일로 전송 되었습니다.", HttpStatus.OK);
+    }
+
+    @PostMapping("/auth")
+    public ResponseEntity<?> verifyAuthenticationNumber(
+            @RequestBody AuthNumberVerificationDto authNumberVerificationDto
+            ) {
+        User user = userService.isValidAuthNumber(authNumberVerificationDto);
+
+        String temporaryToken = userService.generateTemporaryToken(user);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.set("Authorization", temporaryToken);
+
+        return new ResponseEntity<>(headers, HttpStatus.OK);
     }
 }
