@@ -29,13 +29,15 @@ public class SearchNicknameResponseDto {
 
     @Getter
     public static class SearchNicknameDto {
+        private Long userId;
         private String profileImg;
         private String nickname;
         private String userIntro;
         private boolean followingStatus;
 
         @Builder
-        public SearchNicknameDto(String profileImg, String nickname, String userIntro, boolean followingStatus) {
+        public SearchNicknameDto(Long userId, String profileImg, String nickname, String userIntro, boolean followingStatus) {
+            this.userId = userId;
             this.profileImg = profileImg;
             this.nickname = nickname;
             this.userIntro = userIntro;
@@ -44,6 +46,7 @@ public class SearchNicknameResponseDto {
 
         public static SearchNicknameDto of(User user, boolean followingStatus) {
             return SearchNicknameDto.builder()
+                    .userId(user.getId())
                     .profileImg(user.getUserImg())
                     .nickname(user.getNickname())
                     .userIntro(user.getUserIntro())
