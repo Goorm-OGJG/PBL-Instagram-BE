@@ -7,9 +7,8 @@ import jakarta.validation.constraints.Email;
 import lombok.RequiredArgsConstructor;
 import ogjg.instagram.config.security.jwt.JwtUserDetails;
 import ogjg.instagram.user.domain.User;
-import ogjg.instagram.user.dto.AuthNumberVerificationDto;
 import ogjg.instagram.user.dto.SignupRequestDto;
-import ogjg.instagram.user.dto.UserAuthNumberRequestDto;
+import ogjg.instagram.user.dto.UserAuthRequestDto;
 import ogjg.instagram.user.service.UserService;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -62,8 +61,8 @@ public class UserController {
 
     @PostMapping("/exist")
     public ResponseEntity<?> generateAuthenticationNumber(
-            @RequestBody UserAuthNumberRequestDto userAuthNumberRequestDto) {
-        User user = userService.findMemberIfExists(userAuthNumberRequestDto);
+            @RequestBody UserAuthRequestDto userAuthRequestDto) {
+        User user = userService.findMemberIfExists(userAuthRequestDto);
         userService.generateAuthenticationNumber(user);
 
         return new ResponseEntity<>("인증번호가 메일로 전송 되었습니다.", HttpStatus.OK);
@@ -71,9 +70,9 @@ public class UserController {
 
     @PostMapping("/auth")
     public ResponseEntity<?> verifyAuthenticationNumber(
-            @RequestBody AuthNumberVerificationDto authNumberVerificationDto
+            @RequestBody UserAuthRequestDto userAuthRequestDto
             ) {
-        User user = userService.isValidAuthNumber(authNumberVerificationDto);
+        User user = userService.isValidAuthNumber(userAuthRequestDto);
 
         String temporaryToken = userService.generateTemporaryToken(user);
 
@@ -81,5 +80,14 @@ public class UserController {
         headers.set("Authorization", temporaryToken);
 
         return new ResponseEntity<>(headers, HttpStatus.OK);
+    }
+
+    @PostMapping("/password")
+    public ResponseEntity<?> changePassword(
+            @AuthenticationPrincipal JwtUserDetails userDetails,
+            @RequestBody UserAuthRequestDto userAuthRequestDto) {
+        userService.changePassword(userDetails.getUserId(), userAuthRequestDto);
+
+        return new ResponseEntity<>("비밀번호 변경이 완료되었습니다.", HttpStatus.OK);
     }
 }
