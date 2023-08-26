@@ -41,12 +41,4 @@ public interface FollowRepository extends JpaRepository<Follow, Long> {
     and f.followPK.followId = :followId 
     """)
     FollowResponse followerMeToo(@Param("userId") Long userId, @Param("followId") Long followId);
-
-    @Query("""
-    select new ogjg.instagram.follow.response.FollowResponse(f.followPK.userId, f.followPK.followId) 
-    from Follow f 
-    where f.followPK.userId = :userId 
-    and f.followPK.followId = :loginId 
-    """)
-    FollowResponse isFollowingUser(@Param("loginId") Long loginId, @Param("userId") Long userId);
 }

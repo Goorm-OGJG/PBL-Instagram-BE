@@ -85,7 +85,7 @@ public class FollowService {
 
     @Transactional(readOnly = true)
     public boolean isFollowingUser(Long loginId, Long userId) {
-        return followRepository.isFollowingUser(loginId, userId) != null;
+        return followRepository.followerMeToo(loginId, userId) != null;
     }
 
     @Transactional(readOnly = true)
