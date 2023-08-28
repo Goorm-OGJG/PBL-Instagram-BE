@@ -116,10 +116,14 @@ public class FeedService {
     @Transactional(readOnly = true)
     public FeedListResponseDto findFeedList(Long userId, Pageable pageable) {
         // 자신의 게시물도 보이도록 추가하기 위해 가변 리스트로 변형
-        List<Long> followedIds = new ArrayList<>(followService.getFollowedIds(userId));
-        followedIds.add(userId);
+        List<Long> followingIds = new ArrayList<>(followService.getFollowingIds(userId));
+        followingIds.add(userId);
 
-        Page<Feed> feedPages = findFeedsIn(followedIds, pageable);
+        for (Long followingId : followingIds) {
+            log.info("followingId ={}", followingId);
+        }
+
+        Page<Feed> feedPages = findFeedsIn(followingIds, pageable);
 
         return FeedListResponseDto.from(
                 feedPages.getContent().stream()

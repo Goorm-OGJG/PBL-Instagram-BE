@@ -54,7 +54,7 @@ public class FollowService {
     }
 
     @Transactional(readOnly = true)
-    public List<FollowResponse> FollowingList(Long userId){
+    public List<FollowResponse> followingList(Long userId){
         return followRepository.FollowingList(userId);
     }
 
@@ -67,7 +67,8 @@ public class FollowService {
                         .followingStatus(
                                 followRepository.followerMeToo(
                                         followResponse.getFollowId(),
-                                        followResponse.getUserId()) != null
+                                        followResponse.getUserId()
+                                ) != null
                         )
                         .build())
                 .toList();
@@ -89,9 +90,9 @@ public class FollowService {
     }
 
     @Transactional(readOnly = true)
-    public List<Long> getFollowedIds(Long id) {
-        return followedList(id).stream()
-                .map((FollowedResponse::getUserId))
+    public List<Long> getFollowingIds(Long id) {
+        return followingList(id).stream()
+                .map((FollowResponse::getFollowId))
                 .toList();
     }
 }
