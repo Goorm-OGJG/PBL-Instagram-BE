@@ -42,7 +42,7 @@ public class FollowController {
     public ResponseEntity<List<FollowResponse>> following(
             @PathVariable("userId") Long userId
     ){
-        List<FollowResponse> followList = followService.FollowingList(userId);
+        List<FollowResponse> followList = followService.followingList(userId);
         return new ResponseEntity<>(followList,HttpStatus.OK);
     }
 
