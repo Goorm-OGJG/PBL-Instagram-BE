@@ -15,11 +15,9 @@ public class SearchHashtagResultResponseDto {
     private String thumbnail;
     private List<SearchHashtagResultDto> taggedList;
 
-    public static SearchHashtagResultResponseDto from(List<Feed> feeds, Long feedCount, String content, String thumbnail) {
+    public static SearchHashtagResultResponseDto from(List<SearchHashtagResultDto> feeds, Long feedCount, String content, String thumbnail) {
         return SearchHashtagResultResponseDto.builder()
-                .taggedList(feeds.stream()
-                        .map((SearchHashtagResultDto::from))
-                        .toList())
+                .taggedList(feeds)
                 .tagName(content)
                 .feedCount(feedCount)
                 .thumbnail(thumbnail)
@@ -35,16 +33,20 @@ public class SearchHashtagResultResponseDto {
     }
 
     @Getter
-    private static class SearchHashtagResultDto {
+    public static class SearchHashtagResultDto {
         private Long feedId;
         private String mediaUrl;
         private boolean isMediaOne;
+        private Long likeCount;
+        private Long commentCount;
 
         @Builder
-        public SearchHashtagResultDto(Long feedId, String mediaUrl, boolean isMediaOne) {
+        public SearchHashtagResultDto(Long feedId, String mediaUrl, boolean isMediaOne, Long likeCount, Long commentCount) {
             this.feedId = feedId;
             this.mediaUrl = mediaUrl;
             this.isMediaOne = isMediaOne;
+            this.likeCount = likeCount;
+            this.commentCount = commentCount;
         }
 
         public static SearchHashtagResultDto from(Feed feed) {
@@ -52,6 +54,8 @@ public class SearchHashtagResultResponseDto {
                     .feedId(feed.getId())
                     .mediaUrl(feed.getFeedMedias().get(0).getMediaUrl())
                     .isMediaOne(feed.getFeedMedias().size() == 1)
+                    .likeCount(Long.valueOf(feed.getFeedLikes().size()))
+                    .commentCount(Long.valueOf(feed.getComments().size()))
                     .build();
         }
     }
