@@ -1,10 +1,13 @@
 package ogjg.instagram.search.service;
 
 import lombok.RequiredArgsConstructor;
+import ogjg.instagram.comment.repository.CommentRepository;
 import ogjg.instagram.feed.domain.Feed;
+import ogjg.instagram.feed.repository.FeedMediaRepository;
 import ogjg.instagram.follow.service.FollowService;
 import ogjg.instagram.hashtag.domain.HashtagFeed;
 import ogjg.instagram.hashtag.service.HashtagFeedService;
+import ogjg.instagram.like.repository.FeedLikeRepository;
 import ogjg.instagram.search.dto.response.SearchHashtagResponseDto;
 import ogjg.instagram.search.dto.response.SearchHashtagResultResponseDto;
 import ogjg.instagram.search.dto.response.SearchNicknameResponseDto;
@@ -25,6 +28,9 @@ public class SearchService {
     private final HashtagFeedService hashtagFeedService;
     private final FollowService followService;
     private final SearchRepository searchRepository;
+    private final FeedLikeRepository feedLikeRepository;
+    private final CommentRepository commentRepository;
+    private final FeedMediaRepository feedMediaRepository;
 
     //todo : slice 알아보기
     @Transactional(readOnly = true)
@@ -62,7 +68,6 @@ public class SearchService {
         return "%" + search.trim() + "%";
     }
 
-
     /**
      * 애초에 해당 해시태그가 한번도 사용되지 않았다면, 검색에 등장하지 않는다.
      * 만약의 경우 태그가 1개 남아있다가 사라질때의 동시성 처리에 대비해서 count값을 확인하도록 했다.
@@ -75,13 +80,26 @@ public class SearchService {
         }
 
         List<Feed> feedByContent = searchRepository.findFeedByContent(content, pageable);
-        String mediaUrl = feedByContent.get(0).getFeedMedias().get(0).getMediaUrl();
+        String thumbnail = feedByContent.get(0).getFeedMedias().get(0).getMediaUrl();
 
         return SearchHashtagResultResponseDto.from(
-                feedByContent,
+                feedByContent.stream()
+                        .map(this::toSearchHashtagResultDto)
+                        .toList(),
                 feedCount,
                 content,
-                mediaUrl
+                thumbnail
         );
+    }
+
+    // todo : 여기서 count들을 group으로 한 번에 받아오기
+    private SearchHashtagResultResponseDto.SearchHashtagResultDto toSearchHashtagResultDto(Feed feed) {
+        return SearchHashtagResultResponseDto.SearchHashtagResultDto.builder()
+                .feedId(feed.getId())
+                .mediaUrl(feed.getFeedMedias().get(0).getMediaUrl())
+                .isMediaOne(feed.getFeedMedias().size() == 1)
+                .likeCount(feedLikeRepository.countLikes(feed.getId()))
+                .commentCount(commentRepository.countByFeedId(feed.getId()))
+                .build();
     }
 }
