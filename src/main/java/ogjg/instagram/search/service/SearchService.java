@@ -8,6 +8,7 @@ import ogjg.instagram.follow.service.FollowService;
 import ogjg.instagram.hashtag.domain.HashtagFeed;
 import ogjg.instagram.hashtag.service.HashtagFeedService;
 import ogjg.instagram.like.repository.FeedLikeRepository;
+import ogjg.instagram.search.dto.SearchHashTagCountDto;
 import ogjg.instagram.search.dto.response.SearchHashtagResponseDto;
 import ogjg.instagram.search.dto.response.SearchHashtagResultResponseDto;
 import ogjg.instagram.search.dto.response.SearchNicknameResponseDto;
@@ -18,7 +19,10 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
-import java.util.stream.Collectors;
+import java.util.Map;
+
+import static java.util.stream.Collectors.toMap;
+import static java.util.stream.Collectors.toUnmodifiableList;
 
 @Service
 @RequiredArgsConstructor
@@ -39,7 +43,7 @@ public class SearchService {
                 hashtagFeedService.findByHashtagContaining(wildCard(searchKey), pageable)
                         .getContent().stream()
                         .map(this::toSearchHashtagDto)
-                        .collect(Collectors.toUnmodifiableList()),
+                        .collect(toUnmodifiableList()),
                 isUser
         );
 
@@ -60,7 +64,7 @@ public class SearchService {
                         .map((user) -> SearchNicknameResponseDto.SearchNicknameDto.of(
                                 user,
                                 followService.isFollowingUser(loginId, user.getId())))
-                        .collect(Collectors.toUnmodifiableList()),
+                        .collect(toUnmodifiableList()),
                 isUser);
     }
 
@@ -79,12 +83,19 @@ public class SearchService {
             throw new IllegalArgumentException("해당 해시태그를 사용한 게시물이 존재하지 않습니다. hashtag=" + content);
         }
 
-        List<Feed> feedByContent = searchRepository.findFeedByContent(content, pageable);
-        String thumbnail = feedByContent.get(0).getFeedMedias().get(0).getMediaUrl();
+        List<Feed> findFeed = searchRepository.findFeedByContent(content, pageable);
+        Map<Long, SearchHashTagCountDto> countMap = searchRepository.findFeedLikeCountAndCommentCount(findFeed)
+                .stream()
+                .collect(toMap(
+                        (dto) -> dto.getFeedId(),
+                        (dto) -> dto)
+                );
+
+        String thumbnail = findFeed.get(0).getFeedMedias().get(0).getMediaUrl();
 
         return SearchHashtagResultResponseDto.from(
-                feedByContent.stream()
-                        .map(this::toSearchHashtagResultDto)
+                findFeed.stream()
+                        .map((feed -> toSearchHashtagResultDto(feed, countMap.get(feed.getId()))))
                         .toList(),
                 feedCount,
                 content,
@@ -92,14 +103,13 @@ public class SearchService {
         );
     }
 
-    // todo : 여기서 count들을 group으로 한 번에 받아오기
-    private SearchHashtagResultResponseDto.SearchHashtagResultDto toSearchHashtagResultDto(Feed feed) {
+    private SearchHashtagResultResponseDto.SearchHashtagResultDto toSearchHashtagResultDto(Feed feed, SearchHashTagCountDto countDto) {
         return SearchHashtagResultResponseDto.SearchHashtagResultDto.builder()
                 .feedId(feed.getId())
                 .mediaUrl(feed.getFeedMedias().get(0).getMediaUrl())
                 .isMediaOne(feed.getFeedMedias().size() == 1)
-                .likeCount(feedLikeRepository.countLikes(feed.getId()))
-                .commentCount(commentRepository.countByFeedId(feed.getId()))
+                .likeCount(countDto.getLikeCount())
+                .commentCount(countDto.getCommentCount())
                 .build();
     }
 }
