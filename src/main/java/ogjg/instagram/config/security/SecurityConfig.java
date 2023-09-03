@@ -47,7 +47,8 @@ public class SecurityConfig {
                     "/api/users/email/.*",
                     "/api/users/nickname/.*",
                     "/api/users/exist",
-                    "/api/users/auth"
+                    "/api/users/auth",
+                    "/health"
             ));
 
     @Bean
