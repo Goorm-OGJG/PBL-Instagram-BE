@@ -3,7 +3,7 @@ package ogjg.instagram.search.dto.response;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import ogjg.instagram.hashtag.domain.HashtagFeed;
+import ogjg.instagram.hashtag.domain.Hashtag;
 
 import java.util.List;
 
@@ -39,9 +39,9 @@ public class SearchHashtagResponseDto {
             this.totalFeedCount = totalFeedCount;
         }
 
-        public static SearchHashtagDto of(HashtagFeed hashtagFeed, Long totalFeedCount) {
+        public static SearchHashtagDto of(Hashtag hashtag, Long totalFeedCount) {
             return SearchHashtagDto.builder()
-                    .tagName(hashtagFeed.getHashtag().getContent())
+                    .tagName(hashtag.getContent())
                     .totalFeedCount(totalFeedCount)
                     .build();
         }

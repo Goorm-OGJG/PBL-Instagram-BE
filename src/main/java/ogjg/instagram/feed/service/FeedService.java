@@ -147,7 +147,6 @@ public class FeedService {
                 .build();
     }
 
-    //todo : Map 조회 단순화
     @Transactional(readOnly = true)
     public FeedDetailResponseDto findDetail(Long feedId, Long userId) {
         Feed feed = findDetailById(feedId);
