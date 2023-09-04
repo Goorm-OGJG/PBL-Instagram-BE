@@ -43,7 +43,7 @@ public class FollowController {
             @PathVariable Long followId,
             @AuthenticationPrincipal JwtUserDetails userDetails
     ){
-        followService.unfollow(followId,userDetails.getUserId());
+        followService.unfollow(followId, userDetails.getUserId());
         return ResponseEntity.ok().build();
     }
 
