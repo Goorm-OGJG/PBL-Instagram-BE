@@ -9,6 +9,7 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import ogjg.instagram.feed.domain.Feed;
 
+import static jakarta.persistence.CascadeType.REMOVE;
 import static jakarta.persistence.FetchType.LAZY;
 import static lombok.AccessLevel.PROTECTED;
 
@@ -21,7 +22,7 @@ public class HashtagFeed {
     private HashtagPK hashtagPK;
 
     @MapsId("hashtagId")
-    @ManyToOne(fetch = LAZY)
+    @ManyToOne(fetch = LAZY, cascade = REMOVE)
     private Hashtag hashtag;
 
     @MapsId("feedId")

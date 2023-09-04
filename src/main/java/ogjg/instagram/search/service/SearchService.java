@@ -1,13 +1,11 @@
 package ogjg.instagram.search.service;
 
 import lombok.RequiredArgsConstructor;
-import ogjg.instagram.comment.repository.CommentRepository;
 import ogjg.instagram.feed.domain.Feed;
-import ogjg.instagram.feed.repository.FeedMediaRepository;
 import ogjg.instagram.follow.service.FollowService;
-import ogjg.instagram.hashtag.domain.HashtagFeed;
+import ogjg.instagram.hashtag.domain.Hashtag;
 import ogjg.instagram.hashtag.service.HashtagFeedService;
-import ogjg.instagram.like.repository.FeedLikeRepository;
+import ogjg.instagram.hashtag.service.HashtagService;
 import ogjg.instagram.search.dto.SearchHashTagCountDto;
 import ogjg.instagram.search.dto.response.SearchHashtagResponseDto;
 import ogjg.instagram.search.dto.response.SearchHashtagResultResponseDto;
@@ -30,17 +28,15 @@ public class SearchService {
 
     private final UserRepository userRepository;
     private final HashtagFeedService hashtagFeedService;
+    private final HashtagService hashtagService;
     private final FollowService followService;
     private final SearchRepository searchRepository;
-    private final FeedLikeRepository feedLikeRepository;
-    private final CommentRepository commentRepository;
-    private final FeedMediaRepository feedMediaRepository;
 
     //todo : slice 알아보기
     @Transactional(readOnly = true)
     public SearchHashtagResponseDto searchByHashtag(boolean isUser, String searchKey, Pageable pageable) {
         return SearchHashtagResponseDto.from(
-                hashtagFeedService.findByHashtagContaining(wildCard(searchKey), pageable)
+                hashtagService.findByHashtagContaining(wildCard(searchKey), pageable)
                         .getContent().stream()
                         .map(this::toSearchHashtagDto)
                         .collect(toUnmodifiableList()),
@@ -49,10 +45,10 @@ public class SearchService {
 
     }
 
-    private SearchHashtagResponseDto.SearchHashtagDto toSearchHashtagDto(HashtagFeed hashtagFeed) {
+    private SearchHashtagResponseDto.SearchHashtagDto toSearchHashtagDto(Hashtag hashtag) {
         return  SearchHashtagResponseDto.SearchHashtagDto.of(
-                hashtagFeed,
-                hashtagFeedService.countTaggedFeeds(hashtagFeed.getHashtag().getId())
+                hashtag,
+                hashtagFeedService.countTaggedFeeds(hashtag.getId())
         );
     }
 
