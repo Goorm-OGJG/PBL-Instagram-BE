@@ -38,6 +38,15 @@ public class FollowController {
         return ResponseEntity.ok().build();
     }
 
+    @DeleteMapping("/{followId}/follower")
+    public ResponseEntity<Void> followerListDelete(
+            @PathVariable Long followId,
+            @AuthenticationPrincipal JwtUserDetails userDetails
+    ){
+        followService.unfollow(followId, userDetails.getUserId());
+        return ResponseEntity.ok().build();
+    }
+
     @GetMapping("/following/{userId}")
     public ResponseEntity<List<FollowResponse>> following(
             @PathVariable("userId") Long userId
