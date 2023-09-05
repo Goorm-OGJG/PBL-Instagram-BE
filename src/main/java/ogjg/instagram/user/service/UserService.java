@@ -1,6 +1,5 @@
 package ogjg.instagram.user.service;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.JwtException;
 import jakarta.servlet.http.Cookie;
 import jakarta.servlet.http.HttpServletRequest;
@@ -31,7 +30,8 @@ import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.Optional;
 
-import static ogjg.instagram.config.security.jwt.JwtUtils.*;
+import static ogjg.instagram.config.security.jwt.JwtUtils.generateAccessToken;
+import static ogjg.instagram.config.security.jwt.JwtUtils.isValidToken;
 
 @RequiredArgsConstructor
 @Service
@@ -46,7 +46,7 @@ public class UserService {
     @Transactional(readOnly = true)
     public User findById(Long userId) {
         return userRepository.findById(userId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다. id="+ userId));
+                .orElseThrow(() -> new IllegalArgumentException("해당 회원이 존재하지 않습니다. id=" + userId));
     }
 
     @Transactional
@@ -88,12 +88,15 @@ public class UserService {
             throw new JwtException("유효한 Refresh Token이 아닙니다.");
         }
 
-        UserAuthentication userAuth = getUserAuthentication(refreshToken);
+        UserAuthentication userAuth = authenticationRepository.findByRefreshToken(refreshToken)
+                .orElseThrow(() -> new JwtException("Refresh Token을 찾을 수 없습니다."));
 
-        if (refreshToken.equals(userAuth.getRefreshToken())) {
-            String accessToken = getAccessToken(userAuth);
-            response.setHeader("Authorization", "Bearer " + accessToken);
+        if (!refreshToken.equals(userAuth.getRefreshToken())) {
+            throw new JwtException("Refresh Token이 일치하지 않습니다.");
         }
+
+        String accessToken = getAccessToken(userAuth);
+        response.setHeader("Authorization", "Bearer " + accessToken);
     }
 
     @Transactional
@@ -115,16 +118,10 @@ public class UserService {
         return generateAccessToken(userClaimsDto);
     }
 
-    private UserAuthentication getUserAuthentication(String refreshToken) {
-        Claims claims = getClaims(refreshToken);
-        String username = (String) claims.get("email");
-
-        return authenticationRepository.findByUsername(username).orElseThrow(
-                () -> new JwtException("Refresh Token을 찾을 수 없습니다."));
-    }
-
     private static String getRefreshToken(HttpServletRequest request) {
-        return Arrays.stream(request.getCookies())
+        return Optional.ofNullable(request.getCookies())
+                .stream()
+                .flatMap(Arrays::stream)
                 .filter(cookie -> "RefreshToken".equals(cookie.getName()))
                 .findFirst()
                 .map(Cookie::getValue)
