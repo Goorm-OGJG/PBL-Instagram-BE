@@ -125,7 +125,7 @@ public class UserService {
                 .filter(cookie -> "RefreshToken".equals(cookie.getName()))
                 .findFirst()
                 .map(Cookie::getValue)
-                .orElseThrow(() -> new RuntimeException("쿠키에 Refresh Token이 존재하지 않습니다."));
+                .orElseThrow(() -> new JwtException("쿠키에 Refresh Token이 존재하지 않습니다."));
     }
 
     @Transactional
