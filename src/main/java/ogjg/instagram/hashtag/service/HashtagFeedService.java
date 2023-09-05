@@ -6,6 +6,9 @@ import ogjg.instagram.hashtag.domain.Hashtag;
 import ogjg.instagram.hashtag.domain.HashtagFeed;
 import ogjg.instagram.hashtag.domain.HashtagPK;
 import ogjg.instagram.hashtag.repository.HashtagFeedRepository;
+import ogjg.instagram.hashtag.repository.HashtagRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +19,7 @@ import java.util.List;
 public class HashtagFeedService {
 
     private final HashtagFeedRepository hashtagFeedRepository;
+    private final HashtagRepository hashtagRepository;
 
     @Transactional
     public List<HashtagFeed> saveAllHashtags(Feed feed, List<Hashtag> hashtags) {
@@ -30,8 +34,12 @@ public class HashtagFeedService {
     }
 
     @Transactional(readOnly = true)
-    public Long countTaggedFeeds(Long hashtagId) {
-        return hashtagFeedRepository.countByHashtagId(hashtagId);
+    public Long countTaggedFeeds(String content) {
+        return hashtagFeedRepository.countTaggedFeeds(content);
     }
 
+    @Transactional(readOnly = true)
+    public Page<String> findByHashtagContaining(String wildCard, Pageable pageable) {
+        return hashtagRepository.findByContentsContaining(wildCard, pageable);
+    }
 }

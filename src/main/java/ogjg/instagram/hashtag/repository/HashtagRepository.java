@@ -7,14 +7,11 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
-import java.util.Optional;
-
 public interface HashtagRepository extends JpaRepository<Hashtag, Long> {
-    Optional<Hashtag> findByContent(String hashtag);
-
     @Query("""
-            SELECT h FROM Hashtag h
-            WHERE h.content LIKE :searchKey
+            SELECT h.content FROM Hashtag h
+            join h.hashtagFeeds hf WHERE h.content LIKE :searchKey
+            group by h.content
             """)
-    Page<Hashtag> findByHashtagContaining(@Param("searchKey") String searchKey, Pageable pageable);
+    Page<String> findByContentsContaining(@Param("searchKey") String searchKey, Pageable pageable);
 }

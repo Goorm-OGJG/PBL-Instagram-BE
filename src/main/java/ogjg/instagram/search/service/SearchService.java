@@ -3,7 +3,6 @@ package ogjg.instagram.search.service;
 import lombok.RequiredArgsConstructor;
 import ogjg.instagram.feed.domain.Feed;
 import ogjg.instagram.follow.service.FollowService;
-import ogjg.instagram.hashtag.domain.Hashtag;
 import ogjg.instagram.hashtag.service.HashtagFeedService;
 import ogjg.instagram.hashtag.service.HashtagService;
 import ogjg.instagram.search.dto.SearchHashTagCountDto;
@@ -28,7 +27,6 @@ public class SearchService {
 
     private final UserRepository userRepository;
     private final HashtagFeedService hashtagFeedService;
-    private final HashtagService hashtagService;
     private final FollowService followService;
     private final SearchRepository searchRepository;
 
@@ -36,19 +34,19 @@ public class SearchService {
     @Transactional(readOnly = true)
     public SearchHashtagResponseDto searchByHashtag(boolean isUser, String searchKey, Pageable pageable) {
         return SearchHashtagResponseDto.from(
-                hashtagService.findByHashtagContaining(wildCard(searchKey), pageable)
-                        .getContent().stream()
+                hashtagFeedService.findByHashtagContaining(wildCard(searchKey), pageable)
+                        .stream()
                         .map(this::toSearchHashtagDto)
-                        .collect(toUnmodifiableList()),
+                        .toList(),
                 isUser
         );
 
     }
 
-    private SearchHashtagResponseDto.SearchHashtagDto toSearchHashtagDto(Hashtag hashtag) {
+    private SearchHashtagResponseDto.SearchHashtagDto toSearchHashtagDto(String content) {
         return  SearchHashtagResponseDto.SearchHashtagDto.of(
-                hashtag,
-                hashtagFeedService.countTaggedFeeds(hashtag.getId())
+                content,
+                hashtagFeedService.countTaggedFeeds(content)
         );
     }
 
