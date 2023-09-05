@@ -43,10 +43,11 @@ public class SearchService {
 
     }
 
-    private SearchHashtagResponseDto.SearchHashtagDto toSearchHashtagDto(String content) {
+    private SearchHashtagResponseDto.SearchHashtagDto toSearchHashtagDto(Object[] searchResult) {
         return  SearchHashtagResponseDto.SearchHashtagDto.of(
-                content,
-                hashtagFeedService.countTaggedFeeds(content)
+                (String) searchResult[0],
+                (Long) searchResult[1]
+//                hashtagFeedService.countTaggedFeeds(content)
         );
     }
 
