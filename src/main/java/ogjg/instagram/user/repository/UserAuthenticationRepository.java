@@ -9,4 +9,6 @@ public interface UserAuthenticationRepository extends JpaRepository<UserAuthenti
     Optional<UserAuthentication> findByUsername(String username);
 
     Optional<UserAuthentication> findByNickname(String nickname);
+
+    Optional<UserAuthentication> findByRefreshToken(String refreshToken);
 }
