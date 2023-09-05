@@ -20,10 +20,4 @@ public class HashtagService {
     public List<Hashtag> saveAll(List<Hashtag> hashtags) {
         return hashtagRepository.saveAll(hashtags);
     }
-
-
-    @Transactional(readOnly = true)
-    public Page<Hashtag> findByHashtagContaining(String wildCard, Pageable pageable) {
-        return hashtagRepository.findByHashtagContaining(wildCard, pageable);
-    }
 }

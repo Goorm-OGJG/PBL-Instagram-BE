@@ -6,6 +6,8 @@ import ogjg.instagram.hashtag.domain.Hashtag;
 import ogjg.instagram.hashtag.domain.HashtagFeed;
 import ogjg.instagram.hashtag.domain.HashtagPK;
 import ogjg.instagram.hashtag.repository.HashtagFeedRepository;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -30,8 +32,7 @@ public class HashtagFeedService {
     }
 
     @Transactional(readOnly = true)
-    public Long countTaggedFeeds(Long hashtagId) {
-        return hashtagFeedRepository.countByHashtagId(hashtagId);
+    public Page<Object[]> findByHashtagContaining(String wildCard, Pageable pageable) {
+        return hashtagFeedRepository.countTaggedFeedsByHashtag(wildCard, pageable);
     }
-
 }
